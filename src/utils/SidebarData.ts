@@ -19,12 +19,11 @@ import { GoListUnordered } from "react-icons/go";
 import { AiOutlineSchedule } from "react-icons/ai";
 
 export const getSidebarData = (role: string | null) => {
-  return role === "true"
-    ? [
+  return  [
         {
           title: "Category",
           icon: RiHomeSmileLine,
-          path: "/",
+          path: "/categories",
         },
         {
           title: "Doctors",
@@ -97,26 +96,5 @@ export const getSidebarData = (role: string | null) => {
           path: "/settings",
         },
       ]
-    : [
-        {
-          title: "Category",
-          icon: RiHomeSmileLine,
-          path: "/",
-        },
-        {
-          title: "Patients",
-          icon: SlCalender,
-          path: "/patients",
-        },
-        {
-          title: "Appointments",
-          icon: SlCalender,
-          path: "/appointments",
-        },
-        {
-          title: "Settings",
-          icon: CiSettings,
-          path: "/settings",
-        },
-      ];
+    
 };

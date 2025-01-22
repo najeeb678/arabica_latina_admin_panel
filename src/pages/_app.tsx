@@ -5,6 +5,9 @@ import { AppProps } from "next/app";
 
 import { Raleway } from "next/font/google";
 
+import { Provider } from "react-redux";
+import store from "@/redux/store";
+
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -15,9 +18,11 @@ const raleway = Raleway({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={`${raleway.className}`}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Provider store={store}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Provider>
     </div>
   );
 }

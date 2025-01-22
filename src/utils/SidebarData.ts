@@ -3,22 +3,23 @@ import dynamic from "next/dynamic";
 
 import { RiHomeSmileLine } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
-import { TiPlusOutline } from "react-icons/ti";
-import {
-  MdOutlineMedicalServices,
-  MdOutlineProductionQuantityLimits,
-} from "react-icons/md";
-const CiStethoscope = dynamic(
-  () => import("react-icons/ci").then((mod) => mod.CiStethoscope),
-  { ssr: false }
-);
 
-import { PiUsersThree } from "react-icons/pi";
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { GoListUnordered } from "react-icons/go";
-import { AiOutlineSchedule } from "react-icons/ai";
+import { MdOutlineMedicalServices } from "react-icons/md";
 
-export const getSidebarData = (role: string | null) => {
+import { IconType } from "react-icons";
+
+interface SidebarItem {
+  title: string;
+  icon: IconType;
+  path: string;
+  subMenu?: {
+    title: string;
+    path: string;
+    icon?: IconType;
+  }[];
+}
+
+export const getSidebarData = (role: string | null): SidebarItem[] => {
   return [
     {
       title: "Categories",

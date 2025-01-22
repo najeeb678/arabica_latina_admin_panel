@@ -19,6 +19,8 @@ const NavBar = () => {
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: "#E2CBA280",
+        height: "70px",
+
         padding: "0px 25px 0px 10px",
       }}
     >
@@ -28,8 +30,8 @@ const NavBar = () => {
           alt="web logo"
           style={{
             width: "151px",
-            height: "46px",
-            marginTop: "6px",
+            height: "45px",
+            marginTop: "0px",
             marginLeft: "25px",
           }}
         />

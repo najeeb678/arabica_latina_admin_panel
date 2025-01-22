@@ -106,7 +106,7 @@ const AccessPanel = () => {
                 "&:hover": {
                   backgroundColor: "#F5F5F5",
                   "& .icon, & .text": {
-                    color: "#FBC02D",
+                    color: "#3E3F20",
                   },
                 },
               }}
@@ -128,7 +128,7 @@ const AccessPanel = () => {
                 <Box
                   className="icon"
                   sx={{
-                    color: isActive ? "#FBC02D" : "#7B7B7B",
+                    color: isActive ? "#3E3F20" : "#7B7B7B",
                     transition: "color 0.3s",
                   }}
                 >
@@ -142,7 +142,7 @@ const AccessPanel = () => {
                     fontSize: "12px",
                     lineHeight: "16.39px",
                     marginLeft: "12px",
-                    color: isActive ? "#FBC02D" : "#7B7B7B",
+                    color: isActive ? "#3E3F20" : "#7B7B7B",
                     transition: "color 0.3s",
                     whiteSpace: "nowrap",
                   }}
@@ -154,7 +154,7 @@ const AccessPanel = () => {
                     sx={{
                       marginLeft: "10px",
                       fontSize: "16px",
-                      color: "#FBC02D",
+                      color: "#3E3F20",
                       fontWeight: "500",
                       marginTop: "-3.7px",
                     }}
@@ -196,7 +196,7 @@ const AccessPanel = () => {
                         "&:hover": {
                           backgroundColor: "#F5F5F5",
                           "& .icon, & .text": {
-                            color: "#FBC02D",
+                            color: "#3E3F20",
                           },
                         },
                       }}
@@ -212,7 +212,7 @@ const AccessPanel = () => {
                         <Box
                           className="icon"
                           sx={{
-                            color: isSubItemActive ? "#FBC02D" : "#7B7B7B",
+                            color: isSubItemActive ? "#3E3F20" : "#7B7B7B",
                             transition: "color 0.3s",
                           }}
                         >
@@ -226,7 +226,7 @@ const AccessPanel = () => {
                             fontSize: "12px",
                             lineHeight: "16.39px",
                             marginLeft: "12px",
-                            color: isSubItemActive ? "#FBC02D" : "#7B7B7B",
+                            color: isSubItemActive ? "#3E3F20" : "#7B7B7B",
                             transition: "color 0.3s",
                             whiteSpace: "nowrap",
                           }}
@@ -264,7 +264,7 @@ const AccessPanel = () => {
             "&:hover": {
               backgroundColor: "#F5F5F5",
               "& .icon, & .text": {
-                color: "#FBC02D",
+                color: "#3E3F20",
               },
             },
           }}
@@ -300,7 +300,7 @@ const AccessPanel = () => {
             "&:hover": {
               backgroundColor: "#F5F5F5",
               "& .icon, & .text": {
-                color: "#FBC02D",
+                color: "#3E3F20",
               },
             },
           }}

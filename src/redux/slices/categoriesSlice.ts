@@ -7,7 +7,6 @@ export const fetchCategories = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const data = await getCategories();
-      //console.log("Fetched categories:", data); // Check what we receive
       return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message || "Failed to fetch categories");

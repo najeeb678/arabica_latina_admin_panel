@@ -1,5 +1,5 @@
 import { Box, Drawer, IconButton, useTheme } from "@mui/material";
-import Notifications from "./Notifications";
+
 import ProfileMenu from "./ProfileMenu";
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -18,18 +18,20 @@ const NavBar = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#E2CBA280",
+        height: "70px",
+
         padding: "0px 25px 0px 10px",
       }}
     >
       <Box>
         <img
-          src="/images/weblogo%201.svg"
+          src="/logo.svg"
           alt="web logo"
           style={{
             width: "151px",
-            height: "46px",
-            marginTop: "6px",
+            height: "45px",
+            marginTop: "0px",
             marginLeft: "25px",
           }}
         />

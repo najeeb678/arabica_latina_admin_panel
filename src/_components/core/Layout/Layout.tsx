@@ -43,8 +43,7 @@ const Layout = ({ children }: LayoutProps) => {
         sx={{
           position: "fixed",
           backgroundColor: "#FFFFFF",
-          borderBottom: `1px solid #e4e8f8`,
-          height: "58px",
+
           right: 0,
           left: 0,
           top: 0,
@@ -64,7 +63,7 @@ const Layout = ({ children }: LayoutProps) => {
           minHeight: "100vh",
           position: "fixed",
           display: { xs: "none", md: "block" },
-          marginTop: "72px",
+          marginTop: "80px",
           left: 0,
           overflowY: "auto",
           zIndex: 2,
@@ -82,7 +81,7 @@ const Layout = ({ children }: LayoutProps) => {
           padding: "2px 16px 14px 16px",
 
           ml: { xs: "0px", md: "200px" },
-          marginTop: "72px",
+          marginTop: "80px",
           overflow: "auto",
           position: "relative",
           zIndex: 1,

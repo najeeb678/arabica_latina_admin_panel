@@ -14,7 +14,7 @@ const CustomStatusStyles: React.FC<CustomStatusStylesProps> = ({
   additionalStyles,
 }) => {
   const defaultStyle: React.CSSProperties = {
-    color: "black",
+    color: "white",
     backgroundColor: "transparent",
     borderRadius: "30px",
     padding: "2px 5px",

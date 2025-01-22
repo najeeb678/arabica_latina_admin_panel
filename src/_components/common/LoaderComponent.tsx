@@ -1,15 +1,17 @@
-// LoaderComponent.tsx
+
 import React from "react";
 import { Box, CircularProgress } from "@mui/material";
 
 interface LoaderComponentProps {
   height?: string;
   circleSize?: number;
+  style?: React.CSSProperties;
 }
 
 const LoaderComponent: React.FC<LoaderComponentProps> = ({
-  height = "90vh",
-  circleSize = 50,
+  height = "80vh",
+  circleSize = 60,
+  style = {},
 }) => {
   return (
     <Box
@@ -18,10 +20,12 @@ const LoaderComponent: React.FC<LoaderComponentProps> = ({
         justifyContent: "center",
         alignItems: "center",
         minHeight: height,
-        height: "100%",
+        height: height,
+
+        ...style,
       }}
     >
-      <CircularProgress size={circleSize} />
+      <CircularProgress size={circleSize} sx={{ color: "#A44819" }} />
     </Box>
   );
 };

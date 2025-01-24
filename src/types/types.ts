@@ -27,12 +27,16 @@ export type Category = {
  };
 
  export type ProductVariants = {
-  Sr_No: number; 
-  variantId: string; 
-  color: string; 
-  size: string; 
-  stock: number; 
+  Sr_No: number;
+  variantId: string;
+  color: string;
+  size: string;
+  stock: number;
   price: number;
-  createdAt: string; 
-  updatedAt: string; 
+  isDuotone: boolean;
+  createdAt: string;
+  updatedAt: string;
+  product: {
+    name: string;
+  }; // Ensure this matches your structure
 };

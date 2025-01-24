@@ -80,7 +80,7 @@ const Categories = () => {
          accessor: "Sr_No",
          render: (value: number, row: Category) => {
             return (
-               <Box display="flex" alignItems="center" gap="5px">
+               <Box display="flex" alignItems="center" justifyContent="center" gap="5px">
                   <CustomCheckbox
                      isDisabled
                      onChange={(e) => console.log(`Checkbox for ${value}:`, e.target.checked)}

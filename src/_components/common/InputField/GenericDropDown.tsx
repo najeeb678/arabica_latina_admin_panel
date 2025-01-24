@@ -16,7 +16,7 @@ type GenericDropDownProps = {
 };
 
 const GenericDropDown: React.FC<GenericDropDownProps> = ({
-  label = "Gender",
+  label = "Type",
   value,
   name,
   onChange,
@@ -80,7 +80,8 @@ const GenericDropDown: React.FC<GenericDropDownProps> = ({
         >
           <MenuItem value="MEN">Men</MenuItem>
           <MenuItem value="WOMEN">Women</MenuItem>
-          <MenuItem value="UNISEX">Other</MenuItem>
+          <MenuItem value="UNISEX">Unisex</MenuItem>
+          {/* <MenuItem value="OTHER">Other</MenuItem> */}
         </Select>
         {helperText && (
           <Typography sx={{ fontSize: "12px", color: "#f44336", marginTop: "5px" }}>

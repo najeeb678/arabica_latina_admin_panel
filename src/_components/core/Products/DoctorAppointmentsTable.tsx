@@ -269,7 +269,7 @@ const DoctorAppointmentsTable = ({ appointmentsData, loading }: any) => {
 
       <CustomModal
         open={openAppointmentModal}
-        title={selectedAppointments ? "Update Appointment" : "Add Appointment"}
+        title={selectedAppointments ? "Update Appointment" : "Add Product"}
         handleClose={handleCloseUpdate}
         modalWidth="70%"
       >

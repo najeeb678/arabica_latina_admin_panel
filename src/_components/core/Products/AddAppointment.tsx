@@ -30,7 +30,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
       name: "",
       description: "",
       categoryId: "",
-      style: "",
+
       basePrice: "",
       isClothing: "",
       isJewelry: "",
@@ -41,7 +41,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
       name: Yup.string().required("Product name is required"),
       description: Yup.string().required("Description is required"),
       categoryId: Yup.string().required("Category ID is required"),
-      style: Yup.string().required("Style is required"),
+
       basePrice: Yup.string().required("Base price is required"),
       isClothing: Yup.boolean().required("Clothing field is required"),
       isJewelry: Yup.boolean().required("Jewelry field is required"),
@@ -135,21 +135,6 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
               <GenericInput
-                label="Style"
-                type="text"
-                name="style"
-                value={formik.values.style}
-                onChange={formik.handleChange("style")}
-                onBlur={formik.handleBlur("style")}
-                placeholder="Enter product style"
-              />
-              {formik.touched.style && formik.errors.style && (
-                <span className="error-message">{formik.errors.style}</span>
-              )}
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericInput
                 label="Base Price"
                 type="text"
                 name="basePrice"
@@ -171,7 +156,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 value={formik.values.isClothing}
                 onChange={formik.handleChange("isClothing")}
                 onBlur={formik.handleBlur("isClothing")}
-                placeholder="Enter yes or no"
+                placeholder="Enter yes or 'no'"
               />
               {formik.touched.isClothing && formik.errors.isClothing && (
                 <span className="error-message">

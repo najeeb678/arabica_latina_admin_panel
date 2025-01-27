@@ -1,61 +1,39 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchOrders } from '../api/OrdersAPI'; 
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchOrders } from "../api/OrdersAPI"; 
 
-// Define a type for the order object
-interface Order {
-  id: string;
-  product: string;
-  quantity: number;
-  price: number;
-  // Add other fields as needed
-}
-
-interface OrdersState {
-  data: Order[];
-  loading: boolean;
-  error: string | null;
-}
-
-// Define the initial state of the orders
-const initialState: OrdersState = {
-  data: [],
-  loading: false,
-  error: null,
+// Define initial state
+const initialState = {
+  orders: [],
+  status: "idle", // Can be 'idle', 'loading', 'succeeded', 'failed'
+  error: null as string | null | undefined, // Allow error to be a string, null, or undefined
 };
 
-// Async thunk to fetch orders using the getOrders function from OrdersAPI.ts
-export const getOrders = createAsyncThunk(
-  'orders/getOrders',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetchOrders(); // Call the imported getOrders function
-      return response; // Return the fetched data
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || error.message); // Handle error response
-    }
-  }
-);
+// Define asynchronous thunk to fetch orders
+export const fetchOrdersAsync = createAsyncThunk("orders/fetchOrders", async () => {
+  const response = await fetchOrders();
+  console.log("Fetched orders from API19000:", response);
+  return response.data; 
+});
 
+// Create slice
 const ordersSlice = createSlice({
-  name: 'orders',
+  name: "orders",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getOrders.pending, (state) => {
-        state.loading = true;
-        state.error = null; 
+      .addCase(fetchOrdersAsync.pending, (state) => {
+        state.status = "loading";
       })
-      .addCase(getOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
-        state.loading = false;
-        state.data = action.payload; 
+      .addCase(fetchOrdersAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.orders = action.payload; 
       })
-      .addCase(getOrders.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string; 
+      .addCase(fetchOrdersAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       });
-  }
+  },
 });
-
 
 export default ordersSlice.reducer;

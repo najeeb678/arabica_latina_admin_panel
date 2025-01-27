@@ -99,3 +99,15 @@ export type Category = {
   }; 
 };
 
+
+export type Orders = {
+  Sr_No: number;
+  address: string;
+  contactNumber: string;
+  quantity: number;
+  total: number;
+  paymentMethod: string;
+  status: string;
+  is_Active: boolean;
+  productName: string;
+}

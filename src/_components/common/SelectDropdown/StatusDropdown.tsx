@@ -33,6 +33,9 @@ const StatusDropdown: FC<StatusDropdownProps> = ({
         sx={{
           fontSize: "12px",
           color: selectedOption?.color || "inherit", // Dynamic color
+          lineHeight: "33px",  // Set this equal to the height of the select box
+    paddingTop: "17px",     // Remove any default padding
+    paddingBottom: "0",
         }}
       >
         {label}

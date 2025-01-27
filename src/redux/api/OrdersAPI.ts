@@ -1,7 +1,12 @@
 import api from "@/services/api";
 
-////Get all orders
+// Get all orders
 export const fetchOrders = async () => {
-  const response = await api.get("/orders");
-  return response.data;
+  try {
+    const response = await api.get("/orders");
+    // console.log(response.data); 
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders", error);
+  }
 };

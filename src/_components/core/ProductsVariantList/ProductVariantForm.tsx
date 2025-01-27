@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import ProductImageUploader from "@/_components/common/ImageSelector/productImageSelector";
 import GenericInput from "@/_components/common/InputField/GenericInput";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import * as Yup from "yup";
 import { ThreeDots } from "react-loader-spinner";
@@ -12,6 +12,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { getAllProducts } from "../../../redux/slices/productsSlice"; // Import the async thunk action
 import { AppDispatch } from "../../../redux/store";
 import { createProductVariant } from "../../../redux/slices/ProductVariantsSlice";
+import CustomCheckbox from "@/_components/common/CustomCheckBox";
 
 // Define prop types
 interface ProductVariantFormProps {
@@ -50,7 +51,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
       price: Yup.number().required("Price is required").min(0, "Price can't be negative"),
     }),
     onSubmit: async (data) => {
-      const payload = { ...data, attachment: imageUrl };
+      const payload = {
+        ...data,
+        stock: Number(data.stock),
+        price: Number(data.price),
+        attachment: imageUrl,
+      };
       console.log("Form Submitted with data:", data); // Debug log
       try {
         await dispatch(createProductVariant(payload)).unwrap();
@@ -85,24 +91,77 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
         <Grid container spacing={6} direction="row">
           <Grid container rowSpacing={1} columnSpacing={6} direction="row">
             <Grid container size={{ xs: 12, md: 12 }} direction="row">
-              <Grid container spacing={12} direction={{ xs: "column", md: "row" }}>
+              <Grid container spacing={4} direction={{ xs: "row", md: "row" }}>
                 {/* Inputs Section */}
                 <Grid size={{ xs: 12, md: 8 }} component="div">
                   {/* Product Dropdown */}
                   <Grid size={{ xs: 12 }} component="div" mb={2}>
                     {loadingproductsData ? (
-                      <ThreeDots height="28" width="40" radius="9" color="#000" ariaLabel="loading-products" />
+                      <ThreeDots height="40" width="40" radius="9" color="#000" ariaLabel="loading-products" />
                     ) : productsData?.length > 0 ? (
                       <Autocomplete
-                        options={productsData} 
-                        getOptionLabel={(option) => option.name || ""} 
+                        options={productsData}
+                        getOptionLabel={(option) => option.name || ""}
                         value={
-                          productsData.find((product: { productId: string; }) => product.productId === formik.values.productId) || null
-                        } // Match productId with the selected value
-                        onChange={(event, value) => formik.setFieldValue("productId", value ? value.productId : "")} // Set productId in Formik
-                        renderInput={(params) => <TextField {...params} label="Select Product" />} // Label for the dropdown
+                          productsData.find((product: { productId: string }) => product.productId === formik.values.productId) || null
+                        } 
+                        onChange={(event, value) => formik.setFieldValue("productId", value ? value.productId : "")}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Product"
+                            InputProps={{
+                              ...params.InputProps,
+                              sx: {
+                                fontSize: "12px",
+                                height: "45px !important ",
+                                display: "flex",
+                                alignItems: "center", 
+                                padding: "0 12px !important", 
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#D7D7D7",
+                                },
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#D7D7D7",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#D7D7D7",
+                                },
+                              },
+                            }}
+                            InputLabelProps={{
+                              style: {
+                                fontSize: "12px",
+                              },
+                            }}
+                          />
+                        )}
                         fullWidth
+                        sx={{
+                          fontSize: "12px !important", 
+                          height: "40px", 
+                          "& .MuiOutlinedInput-root": {
+                            fontSize: "12px", 
+                            height: "40px",
+                            display: "flex", 
+                            alignItems: "center", 
+                            padding: "0 12px",
+                          },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#D7D7D7", 
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#D7D7D7", 
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#D7D7D7", 
+                          },
+                          "& .MuiSelect-icon": {
+                            color: "#393939",
+                          },
+                        }}
                       />
+
 
 
                     ) : (
@@ -213,14 +272,30 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
               </Grid>
               {/* Duotone Checkbox */}
               <Grid size={{ xs: 12, md: 12 }} component="div">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="isDuotone"
+                <label style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <CustomCheckbox
                     checked={formik.values.isDuotone}
-                    onChange={formik.handleChange}
+                    onChange={(event) =>
+                      formik.setFieldValue("isDuotone", event.target.checked)
+                    } 
+                    iconStyle={{
+                      fontSize: 16, 
+                    }}
+                    checkedIconStyle={{
+                      fontSize: 16,
+                      color: "#fbc540",
+                    }}
+                    sx={{
+                      padding: "4px",
+                    }}
                   />
-                  Duotone
+                  <Typography
+                    sx={{
+                      fontSize: "12px",
+                    }}
+                  >
+                    Duotone
+                  </Typography>
                 </label>
               </Grid>
             </Grid>
@@ -245,9 +320,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                 },
               }}
               onClick={(e) => {
-                // e.preventDefault(); // Prevent default form behavior
-               formik.handleSubmit(); // Trigger Formik submission
-                //console.log("Form submitted:", formik.values);
+                formik.handleSubmit(); 
               }}
             >
               {isImageUploading ? (

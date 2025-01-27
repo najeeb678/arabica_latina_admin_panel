@@ -19,7 +19,7 @@ const ProductVariantsList = () => {
    const [processedVariants, setProcessedVariants] = useState<ProductVariantsType[]>([]);
    const [selectedVariant, setSelectedVariant] = useState<ProductVariantsType | null>(null);
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [isAddProductVariantFormOpen, setisAddProductVariantFormOpen] = useState<boolean>(false);
+   const [isAddProductVariantFormOpen, setisAddProductVariantFormOpen] = useState<boolean>(false);
 
    useEffect(() => {
       dispatch(fetchProductVariants());
@@ -65,9 +65,9 @@ const ProductVariantsList = () => {
       },
       {
          label: "Name",
-         accessor: "product.name", 
+         accessor: "product.name",
          render: (value: any, row: any) => {
-            return <span>{row.product?.name}</span>; 
+            return <span>{row.product?.name}</span>;
          },
       },
 
@@ -124,15 +124,15 @@ const ProductVariantsList = () => {
    ];
 
    const handleCloseForm = () => {
-      setisAddProductVariantFormOpen(false); 
+      setisAddProductVariantFormOpen(false);
       dispatch(fetchProductVariants());
-      
+
    };
 
    return (
       <div>
          <GenericTable
-            data={processedVariants || []} 
+            data={processedVariants || []}
             columns={columns}
             title="Product Variants"
             buttons={buttons}
@@ -153,10 +153,13 @@ const ProductVariantsList = () => {
                   left: "50%",
                   transform: "translate(-50%, -50%)",
                   maxWidth: 800,
+                  maxHeight: "90vh",
+                  overflowY: 'auto',
                   bgcolor: "background.paper",
                   borderRadius: 2,
                   boxShadow: 24,
                   p: 4,
+
                }}
             >
                <ProductVariantForm handleClose={handleCloseForm} />

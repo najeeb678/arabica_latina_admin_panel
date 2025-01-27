@@ -123,7 +123,12 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
                            placeholder="Enter Category Name"
                         />
                         {formik.touched.name && formik.errors.name && (
-                           <span className="error-message">
+                           <span className="error-message" style={{
+                              color: 'red',
+                              fontSize: '12px',
+                              marginTop: '5px',
+                              display: 'inline-block',
+                           }}>
                               {typeof formik.errors.name === "string"
                                  ? formik.errors.name
                                  : ""}

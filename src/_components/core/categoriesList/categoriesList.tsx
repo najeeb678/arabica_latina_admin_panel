@@ -20,36 +20,30 @@ const Categories = () => {
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
    const [isAddCategoryFormOpen, setIsAddCategoryFormOpen] = useState<boolean>(false);
 
-   // Fetch categories when the component mounts
    useEffect(() => {
       dispatch(fetchCategories());
    }, [dispatch]);
 
-   // Track updates to the selected category
    useEffect(() => {
       if (selectedCategory) {
          console.log('Updated selectedCategory:', selectedCategory.categoryId);
       }
    }, [selectedCategory]);
 
-   // Handle updating processed categories with Sr_No
    useEffect(() => {
       if (categories) {
          const updatedCategories = categories.map((item: Category, index: number) => ({
             ...item,
-            Sr_No: index + 1, // Add serial number to each row
+            Sr_No: index + 1, 
          }));
          setProcessedCategories(updatedCategories);
       }
    }, [categories]);
 
-   // Open update modal
    const handleOpenUpdate = (row: Category) => {
       console.log("Update Category:", row);
-      // Open your update modal or navigate to the update page
    };
 
-   // Handle category deletion
    const handleDeleteCategory = async () => {
       if (selectedCategory && selectedCategory.categoryId) {
          try {
@@ -85,7 +79,7 @@ const Categories = () => {
                      isDisabled
                      onChange={(e) => console.log(`Checkbox for ${value}:`, e.target.checked)}
                   />
-                  <span>{value}</span> {/* Display the serial number */}
+                  <span>{value}</span>
                </Box>
             );
          },
@@ -149,15 +143,14 @@ const Categories = () => {
       },
    ];
 
-   // Close form modal
    const handleCloseForm = () => {
-      setIsAddCategoryFormOpen(false); // Close the form modal
+      setIsAddCategoryFormOpen(false); 
    };
 
    return (
       <div>
          <GenericTable
-            data={processedCategories || []} // Use categories with Sr_No
+            data={processedCategories || []} 
             columns={columns}
             title="Categories"
             buttons={buttons}

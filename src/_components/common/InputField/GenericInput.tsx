@@ -14,7 +14,7 @@ type GenericInputProps = {
   label?: string;
   inputfieldHeight?: string;
   name?: string;
-  value: string;
+  value: string | number; 
   onChange: (newValue: string) => void;
   type?: "text" | "number" | "cnic" | "date" | "time"; // Added datetime-local type
   onBlur?: (
@@ -50,7 +50,7 @@ const GenericInput: React.FC<GenericInputProps> = ({
   error, // Destructure error
   helperText, // Destructure helperText
   disabled=false
-}) => {
+}: any ) => {
   // Handle CNIC formatting
   const formatCnic = (value: string) => {
     const digits = value.replace(/\D/g, "");

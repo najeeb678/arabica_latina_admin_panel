@@ -28,3 +28,13 @@ export const postProductVariant = async (payload: {
     throw new Error("Failed to post product variant"); 
   }
 };
+
+// Delete a product variant by ID
+export const deleteProductVariantAPI = async (id: string) => {
+  try {
+    const response = await api.delete(`/product-variants/${id}`);
+    return response.data; 
+  } catch (error) {
+    throw new Error(`Failed to delete product variant with ID: ${id}`);
+  }
+};

@@ -163,7 +163,7 @@ import { PhotoCamera } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 
 import { ThreeDots } from "react-loader-spinner";
-import { uploadImage } from "@/redux/slices/DoctorsSlice";
+import { uploadImage } from "../../../redux/slices/categoriesSlice";
 
 interface ProductImageUploaderProps {
   selectedImage: string;
@@ -196,7 +196,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
         const formData = new FormData();
         formData.append("image", file);
         const imageUrl = await dispatch(uploadImage(formData)).unwrap();
-
+        
         onImageChange(imageUrl);
       } catch (error) {
         console.error("Error uploading image:", error);

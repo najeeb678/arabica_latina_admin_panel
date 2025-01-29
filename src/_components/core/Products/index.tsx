@@ -139,14 +139,14 @@ const AdminProductsTable = () => {
         }}
       />
 
-      {/* <CustomModal
+      <CustomModal
         open={openAppointmentModal}
-        title={selectedAppointments ? "Update Appointment" : "Add Product"}
-        handleClose={handleCloseUpdate}
+        title={"Add Product"}
+        handleClose={() => setOpenAppointmentModal(false)}
         modalWidth="70%"
-      > */}
-      {/* <AddAppointment handleClose={() => setOpenAppointmentModal(false)} />
-      </CustomModal> */}
+      >
+        <AddAppointment handleClose={() => setOpenAppointmentModal(false)} />
+      </CustomModal>
     </>
   );
 };

@@ -11,7 +11,6 @@ import AddAppointment from "./AddAppointment";
 import { Doctor, ButtonConfig, Column, FilterConfig } from "@/types/types";
 
 import { Box } from "@mui/material";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 import { format } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,11 +18,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  changeAppointmentStatus,
-  deleteAppointment,
-  getAllAppointments,
-} from "@/redux/slices/AppointmentSlice";
+
+import { getAllProducts } from "@/redux/slices/productsSlice";
 
 import StatusDropdown from "@/_components/common/SelectDropdown/StatusDropdown";
 
@@ -45,7 +41,7 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
 
   useEffect(() => {
     dispatch(
-      getAllAppointments({ search: filteredName, filter: appointmentsFilter })
+      getAllProducts({ search: filteredName, filter: appointmentsFilter })
     );
   }, [filteredName, appointmentsFilter, dispatch]);
   useEffect(() => {
@@ -65,24 +61,6 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
         status: data?.status || "Unknown",
       }))
     : [];
-  const handleStatusChange = async (
-    appointmentId: string,
-    newStatus: string
-  ) => {
-    try {
-      const response = await dispatch(
-        changeAppointmentStatus({ appointmentId, status: newStatus })
-      );
-
-      if (response.meta.requestStatus === "fulfilled") {
-        toast.success("Appointment status updated successfully!");
-      } else {
-        toast.error("Failed to update status");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
 
   const statusDropdownoptions = [
     { value: "Pending", label: "Pending", color: "#FFA500" },
@@ -137,16 +115,7 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
             gap={"10px"}
           >
             {/* {row.status} */}
-            <StatusDropdown
-              options={statusDropdownoptions}
-              selectedValue={row.status || "Pending"}
-              onChange={(val) => handleStatusChange(row.ID, val)}
-              sx={{
-                width: "160px",
-                backgroundColor: "#f5f5f5",
-                height: "25px",
-              }}
-            />
+
             {/* <DropDownForActions
               items={[
                 {
@@ -183,7 +152,7 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
   ];
   const onSearchAppointment = (searchTerm: string) => {
     dispatch(
-      getAllAppointments({ search: searchTerm, filter: appointmentsFilter })
+      getAllProducts({ search: searchTerm, filter: appointmentsFilter })
     ).unwrap();
   };
 
@@ -222,27 +191,13 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
     setSelectedAppointments(null);
     setOpenAppointmentModal(false);
   };
-  const handleAppointmentDelete = async (id: any) => {
-    try {
-      const res = await dispatch(deleteAppointment(id)).unwrap();
-      if (res) {
-        toast.success("Appointment deleted successfully");
-      }
-      setSelectedAppointments(null);
-
-      setIsDeleteModalOpen(false);
-    } catch (error) {
-      toast.error("Failed to delete the Appointment");
-    }
-    setIsDeleteModalOpen(false);
-  };
 
   const handleNewAppointment = () => {
     setOpenAppointmentModal(true);
   };
   const buttons: ButtonConfig[] = [
     {
-      label: "Add Appointment",
+      label: "Add Product",
       variant: "contained",
       onClick: handleNewAppointment,
       size: "sm",
@@ -278,7 +233,7 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
 
       <CustomModal
         open={openAppointmentModal}
-        title={selectedAppointments ? "Update Appointment" : "Add Appointment"}
+        title={selectedAppointments ? "Update Appointment" : "Add Product"}
         handleClose={handleCloseUpdate}
         modalWidth="70%"
       >
@@ -288,15 +243,15 @@ const AdminAppointmentsTable = ({ appointmentsData, loading }: any) => {
           }}
         />
       </CustomModal>
-      <TransitionsDialog
+      {/* <TransitionsDialog
         open={isDeleteModalOpen}
         heading="Delete Appointment"
         description="Are you sure you want to delete this Appointment?"
         cancel={() => {
           setSelectedAppointments(null), setIsDeleteModalOpen(false);
         }}
-        proceed={() => handleAppointmentDelete(selectedAppointments.ID)}
-      />
+        proceed={() => handleAppointmentDelete(selectedAppointments.ID)} */}
+      {/* /> */}
     </>
   );
 };

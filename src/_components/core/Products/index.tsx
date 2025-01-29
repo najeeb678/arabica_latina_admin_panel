@@ -18,11 +18,15 @@ const AdminProductsTable = () => {
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredName, setFilteredName] = useState<string>("");
-  const [appointmentsFilter, setAppointmentsFilter] = useState<string>("weekly");
-  const [openAppointmentModal, setOpenAppointmentModal] = useState<boolean>(false);
+  const [appointmentsFilter, setAppointmentsFilter] =
+    useState<string>("weekly");
+  const [openAppointmentModal, setOpenAppointmentModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getAllProducts({ search: filteredName, filter: appointmentsFilter }))
+    dispatch(
+      getAllProducts({ search: filteredName, filter: appointmentsFilter })
+    )
       .unwrap()
       .then((res) => {
         console.log("Fetched Products Data:", res);
@@ -75,7 +79,9 @@ const AdminProductsTable = () => {
       .catch((err) => console.error("Search Error", err));
   };
 
-  const searchFunc = useCallback(_debounce(onSearchAppointment, 500), [appointmentsFilter]);
+  const searchFunc = useCallback(_debounce(onSearchAppointment, 500), [
+    appointmentsFilter,
+  ]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -133,14 +139,14 @@ const AdminProductsTable = () => {
         }}
       />
 
-      <CustomModal
+      {/* <CustomModal
         open={openAppointmentModal}
         title={selectedAppointments ? "Update Appointment" : "Add Product"}
         handleClose={handleCloseUpdate}
         modalWidth="70%"
-      >
-        <AddAppointment handleClose={() => setOpenAppointmentModal(false)} />
-      </CustomModal>
+      > */}
+      {/* <AddAppointment handleClose={() => setOpenAppointmentModal(false)} />
+      </CustomModal> */}
     </>
   );
 };

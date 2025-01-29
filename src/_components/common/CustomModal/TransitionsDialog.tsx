@@ -41,26 +41,15 @@ const TransitionsDialog: React.FC<TransitionsDialogProps> = ({
       aria-describedby="alert-dialog-slide-description"
     >
       <div className="bg-black">
-        <DialogTitle
-          sx={{ color: "#161616", fontFamily: "Avenir", fontWeight: "400" }}
-        >
-          {heading}
-        </DialogTitle>
+        <DialogTitle sx={{color:"#161616",fontFamily:"Avenir",fontWeight:"400"}}>{heading}</DialogTitle>
         <DialogContent>
-          <DialogContentText
-            id="alert-dialog-slide-description"
-            sx={{ color: "#161616", fontWeight: "300" }}
-          >
+          <DialogContentText id="alert-dialog-slide-description" sx={{color:"#161616",fontWeight:"300"}}>
             {description}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button sx={{ color: "#fbc02d" }} onClick={cancel}>
-            Disagree
-          </Button>
-          <Button sx={{ color: "#fbc02d" }} onClick={proceed}>
-            Agree
-          </Button>
+          <Button sx={{color:"#fbc02d"}} onClick={cancel}>Disagree</Button>
+          <Button sx={{color:"#fbc02d"}} onClick={proceed}>Agree</Button>
         </DialogActions>
       </div>
     </Dialog>

@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid2";
 import * as Yup from "yup";
 import { ThreeDots } from "react-loader-spinner";
 import { Autocomplete, TextField } from "@mui/material";
-import { getAllProducts } from "../../../redux/slices/productsSlice"; // Import the async thunk action
+import { getAllProducts } from "../../../redux/slices/productsSlice"; 
 import { AppDispatch } from "../../../redux/store";
 import { createProductVariant } from "../../../redux/slices/ProductVariantsSlice";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
@@ -24,13 +24,12 @@ interface ProductVariantFormProps {
 }
 
 const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, product }) => {
-  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch to type dispatch correctly
+  const dispatch = useDispatch<AppDispatch>(); 
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const { productsData, loadingproductsData } = useSelector((state: any) => state.products);
 
-  // Formik setup
   const formik = useFormik({
     initialValues: {
       productId: product?.id || "",

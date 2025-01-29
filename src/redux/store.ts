@@ -3,6 +3,7 @@ import categoriesSlice from "../redux/slices/categoriesSlice";
 import productsSlice from "../redux/slices/productsSlice";
 import productsVariantsSlice from "./slices/ProductVariantsSlice";
 import ordersSlice from './slices/OrdersSlice';
+import customersSlice from "./slices/CustomersSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     productsVariants: productsVariantsSlice, 
     products: productsSlice,
     orders: ordersSlice,
+    customers: customersSlice,
   },
 });
 

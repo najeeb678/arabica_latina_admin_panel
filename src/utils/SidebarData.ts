@@ -24,7 +24,7 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
     {
       title: "Categories",
       icon: RiHomeSmileLine,
-      path: "/categories",
+      path: "/",
     },
     // {
     //   title: "Doctors",

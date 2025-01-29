@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  TextField,
-  Typography,
-} from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import GenericInput from "@/_components/common/InputField/GenericInput";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { Box, Button } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
+import { useFormik } from "formik";
+
+import * as Yup from "yup";
+
+import GenericInput from "@/_components/common/InputField/GenericInput";
+
+import { AppDispatch } from "@/redux/store";
 import { addProduct, getAllProducts } from "@/redux/slices/productsSlice";
 
 interface AddProductProps {

@@ -132,9 +132,7 @@ const OrdersList = () => {
                   selectedValue={value}
                   onChange={handleStatusChange}
                   label="Order Status"
-                  sx={{ width: "100%",
-                    
-                   }} // Optional styling
+                  sx={{ width: "100%",}} 
                />
             );
          },
@@ -143,11 +141,7 @@ const OrdersList = () => {
 
   
    return (
-      <div>
-         {/* Loading state based on status */}
-         {status === "loading" && <div>Loading...</div>}
-         {status === "failed" && <div>Error: {error}</div>}
-
+      <>
          <GenericTable
             data={processedOrders || []}
             columns={columns}
@@ -164,7 +158,7 @@ const OrdersList = () => {
             cancel={() => setIsDeleteModalOpen(false)}
             proceed={handleDeleteOrder}
          />
-      </div>
+      </>
    );
 };
 

@@ -111,3 +111,21 @@ export type Orders = {
   is_Active: boolean;
   productName: string;
 }
+
+export interface Customers {
+  userId: string;
+  name: string;
+  email: string;
+  contactNumber: string | null;
+  address: string | null;
+  profilePic: string;
+  dateOfBirth: string | null;
+  subscription: boolean;
+  is_Active: boolean;
+  is_Deleted: boolean;
+  is_emailVerified: boolean;
+  is_contactNumberVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  password: string;
+}

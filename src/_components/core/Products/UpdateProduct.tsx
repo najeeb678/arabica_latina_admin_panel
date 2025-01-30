@@ -1,59 +1,84 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-
 import { Box, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-
 import { useFormik } from "formik";
-
 import * as Yup from "yup";
-
 import GenericInput from "@/_components/common/InputField/GenericInput";
-
 import { AppDispatch } from "@/redux/store";
-import { addProduct, getAllProducts } from "@/redux/slices/productsSlice";
+import { updateProduct, getAllProducts } from "@/redux/slices/productsSlice";
+import GenericDropDown from "@/_components/common/InputField/GenericDropDown";
+import { fetchCategories } from "@/redux/slices/categoriesSlice";
+import CategoryDropDown from "@/_components/common/InputField/CategoryDropdown";
 
-interface AddProductProps {
+interface EditProductProps {
   handleClose?: () => void;
+  product: any;
 }
-const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
+
+const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, product }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const { categories } = useSelector((state: any) => state.categories);
 
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const [categoryName, setCategoryName] = useState<string>("");
+
+  useEffect(() => {
+    if (categories && product?.categoryId) {
+      // Find the category with the matching categoryId
+      const category = categories.find(
+        (category: any) => category.categoryId === product?.categoryId
+      );
+
+      // Set the category name if a matching category is found
+      if (category) {
+        setCategoryName(category.name);
+        console.log("Category Name:", category.name);
+      }
+    }
+  }, [categories, product]);
+
+  // console.log("categoryName is: ", categoryName);
+  console.log("Product Data121: ", product?.productId);
   const formik = useFormik({
     initialValues: {
-      name: "",
-      description: "",
-      categoryId: "",
-
-      basePrice: "",
-      isClothing: "",
-      isJewelry: "",
-      composition: "",
-      weight: "",
+      name: product?.name || "",
+      description: product?.description || "",
+      categoryId: product?.categoryId || "", 
+      basePrice: product?.basePrice || "",
+      composition: product?.composition || "",
+      weight: product?.weight || "",
+      productType: product?.productType || "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Product name is required"),
       description: Yup.string().required("Description is required"),
       categoryId: Yup.string().required("Category ID is required"),
-
       basePrice: Yup.string().required("Base price is required"),
-      isClothing: Yup.boolean().required("Clothing field is required"),
-      isJewelry: Yup.boolean().required("Jewelry field is required"),
       composition: Yup.string().required("Composition is required"),
       weight: Yup.string().required("Weight is required"),
+      productType: Yup.string().required("Product type is required"),
     }),
     onSubmit: async (data) => {
+      console.log("Submitting Form Data1122: ", data);  
       setLoading(true);
+      const updatedData = {
+        ...data,
+        basePrice: parseInt(data.basePrice, 10),
+      };
       try {
-        const res = await dispatch(addProduct(data)).unwrap();
-
+        const res = await dispatch(updateProduct({ id: product?.productId, data: updatedData })).unwrap();
+        
         if (res) {
+          toast("Product updated successfully", { type: "success" });
           handleClose();
           dispatch(getAllProducts({ search: "", filter: "" }));
-          toast("Product added successfully", { type: "success" });
         }
         setLoading(false);
         handleClose();
@@ -87,13 +112,10 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 placeholder="Enter product name"
               />
               {formik.touched.name && formik.errors.name && (
-                <span className="error-message">
-                  {typeof formik.errors.name === "string"
-                    ? formik.errors.name
-                    : ""}
-                </span>
+                <span className="error-message">{formik.errors.name as string}</span>
               )}
             </Grid>
+
             <Grid size={{ xs: 12, md: 6 }} component="div">
               <GenericInput
                 name="description"
@@ -105,29 +127,33 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 placeholder="Enter product description"
               />
               {formik.touched.description && formik.errors.description && (
-                <span className="error-message">
-                  {typeof formik.errors.description === "string"
-                    ? formik.errors.description
-                    : ""}
-                </span>
+                <span className="error-message">{formik.errors.description as string}</span>
               )}
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericInput
-                label="Category ID"
-                type="text"
+              <GenericDropDown
                 name="categoryId"
-                value={formik.values.categoryId}
-                onChange={formik.handleChange("categoryId")}
-                onBlur={formik.handleBlur("categoryId")}
-                placeholder="Enter category ID"
+                label="Category"
+                options={[
+                  { label: categoryName, value: product?.categoryId },
+                  ...categories.map((category: any) => ({
+                    label: category.name,
+                    value: category.name,  
+                  })),
+                ]}
+                value={formik.values.categoryId} 
+                onChange={(event) => {
+                  formik.setFieldValue("categoryId", event.target.value);  // Set the selected category name
+                }}
               />
+
+
+
               {formik.touched.categoryId && formik.errors.categoryId && (
-                <span className="error-message">
-                  {formik.errors.categoryId}
-                </span>
+                <span className="error-message">{formik.errors.categoryId as string}</span>
               )}
+
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -141,42 +167,9 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 placeholder="Enter base price"
               />
               {formik.touched.basePrice && formik.errors.basePrice && (
-                <span className="error-message">{formik.errors.basePrice}</span>
+                <span className="error-message">{formik.errors.basePrice as string}</span>
               )}
             </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericInput
-                label="Clothing"
-                type="text"
-                name="isClothing"
-                value={formik.values.isClothing}
-                onChange={formik.handleChange("isClothing")}
-                onBlur={formik.handleBlur("isClothing")}
-                placeholder="Enter yes or 'no'"
-              />
-              {formik.touched.isClothing && formik.errors.isClothing && (
-                <span className="error-message">
-                  {formik.errors.isClothing}
-                </span>
-              )}
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericInput
-                label="Jewelry"
-                type="text"
-                name="isJewelry"
-                value={formik.values.isJewelry}
-                onChange={formik.handleChange("isJewelry")}
-                onBlur={formik.handleBlur("isJewelry")}
-                placeholder="Enter 'yes' or 'no'"
-              />
-              {formik.touched.isJewelry && formik.errors.isJewelry && (
-                <span className="error-message">{formik.errors.isJewelry}</span>
-              )}
-            </Grid>
-
             <Grid size={{ xs: 12, md: 6 }} component="div">
               <GenericInput
                 label="Composition"
@@ -188,9 +181,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 placeholder="Enter product composition"
               />
               {formik.touched.composition && formik.errors.composition && (
-                <span className="error-message">
-                  {formik.errors.composition}
-                </span>
+                <span className="error-message">{formik.errors.composition as string}</span>
               )}
             </Grid>
 
@@ -205,18 +196,39 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 placeholder="Enter product weight"
               />
               {formik.touched.weight && formik.errors.weight && (
-                <span className="error-message">{formik.errors.weight}</span>
+                <span className="error-message">{formik.errors.weight as string}</span>
               )}
             </Grid>
+            <Grid size={{ xs: 12, md: 6 }} component="div">
+              <GenericDropDown
+                name="productType"
+                label="Product Type"
+                options={[
+                  { label: "Jewelry", value: "JEWELRY" },
+                  { label: "Clothes", value: "CLOTHES" },
+                  { label: "Food", value: "FOOD" },
+                  { label: "Other", value: "OTHER" },
+                ]}
+                value={formik.values.productType}
+                onChange={(event) => formik.setFieldValue("productType", event.target.value)}
+              />
+            </Grid>
+
           </Grid>
 
           <Box
-            sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
           >
             <Button
               variant="outlined"
               onClick={() => handleClose()}
-              style={{ marginLeft: "10px" }}
+              style={{
+                marginLeft: "10px",
+              }}
               sx={{
                 fontSize: "13px !important",
                 fontWeight: "400 !important",
@@ -234,6 +246,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
             >
               Cancel
             </Button>
+
             <Button
               type="submit"
               variant="contained"
@@ -249,27 +262,13 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
                 "&:hover": {
                   backgroundColor: "#FBC02D !important", // Same background color
                   color: "white !important",
-                  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.05 )",
-                  transform: "scale(1.005)",
+                  boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
+                  transform: "scale(1.01)",
                 },
               }}
-              onClick={(e: any) => {
-                e.preventDefault();
-                formik.handleSubmit();
-              }}
+              disabled={loading}
             >
-              {loading ? (
-                <ThreeDots
-                  height="28"
-                  width="40"
-                  radius="9"
-                  color="#FFFFFF"
-                  ariaLabel="three-dots-loading"
-                  visible
-                />
-              ) : (
-                <>Add Product</>
-              )}
+              {loading ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Grid>
@@ -278,4 +277,5 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
   );
 };
 
-export default AddProduct;
+
+export default EditProduct;

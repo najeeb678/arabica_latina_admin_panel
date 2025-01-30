@@ -2,13 +2,18 @@ import React, { useCallback, useEffect, useState } from "react";
 import _debounce from "lodash/debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { getAllProducts } from "@/redux/slices/productsSlice";
+import { getAllProducts, deleteProduct } from "@/redux/slices/productsSlice"; // Import deleteProduct action
 import GenericTable from "@/_components/common/GenericTable";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import { ButtonConfig, Column, FilterConfig } from "@/types/types";
 import { Box } from "@mui/material";
 import { formatDate } from "@/utils/utils";
-import AddAppointment from "./AddAppointment";
+import EditProduct from "./UpdateProduct";
+import DropDownForActions from "@/_components/common/MenuDropDownForActions/DropDownForActions";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import AddProduct from "./AddProduct";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
 
 const AdminProductsTable = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,14 +23,14 @@ const AdminProductsTable = () => {
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredName, setFilteredName] = useState<string>("");
-  const [appointmentsFilter, setAppointmentsFilter] =
-    useState<string>("weekly");
-  const [openAppointmentModal, setOpenAppointmentModal] =
-    useState<boolean>(false);
+  const [productsFilter, setProductsFilter] = useState<string>("weekly");
+  const [openProductModal, setOpenProductModal] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(
-      getAllProducts({ search: filteredName, filter: appointmentsFilter })
+      getAllProducts({ search: filteredName, filter: productsFilter })
     )
       .unwrap()
       .then((res) => {
@@ -34,7 +39,7 @@ const AdminProductsTable = () => {
       .catch((err) => {
         console.error("Error Fetching Products Data:", err);
       });
-  }, [filteredName, appointmentsFilter, dispatch]);
+  }, [filteredName, productsFilter, dispatch]);
 
   useEffect(() => {
     setFilteredName(searchInput);
@@ -42,46 +47,78 @@ const AdminProductsTable = () => {
 
   const transformedProductsData = productsData
     ? productsData.map((product: any, index: number) => ({
-        Sr_No: index + 1,
-        Product_ID: product?.productId || "N/A",
-        Name: product?.name || "N/A",
-        Category: product?.category?.name || "N/A",
-        Base_Price: product?.basePrice || 0,
-        Description: product?.description || "N/A",
-        Created_At: formatDate(product?.createdAt) || "N/A",
-        Updated_At: formatDate(product?.updatedAt) || "N/A",
-        Variants: product?.Variants.map((variant: any) => ({
-          Variant_ID: variant?.variantId || "N/A",
-          Color: variant?.color || "N/A",
-          Size: variant?.size || "N/A",
-          Style: variant?.style || "N/A",
-          Price: variant?.price || 0,
-          In_Stock: variant?.isInStock ? "Yes" : "No",
-        })),
-      }))
+      Sr_No: index + 1,
+      Product_ID: product?.productId || "N/A",
+      Name: product?.name || "N/A",
+      Base_Price: product?.basePrice || 0,
+      Description: product?.description || "N/A",
+      Created_At: formatDate(product?.createdAt) || "N/A",
+      Updated_At: formatDate(product?.updatedAt) || "N/A",
+      Product_Type: product?.productType || "N/A",
+      row: product,
+      Variants: product?.Variants.map((variant: any) => ({
+        Variant_ID: variant?.variantId || "N/A",
+        Color: variant?.color || "N/A",
+        Size: variant?.size || "N/A",
+        Style: variant?.style || "N/A",
+        Price: variant?.price || 0,
+        In_Stock: variant?.isInStock ? "Yes" : "No",
+      })),
+    }))
     : [];
 
   const columns: Column<any>[] = [
     { label: "Sr_No", accessor: "Sr_No" },
     { label: "Product ID", accessor: "Product_ID" },
     { label: "Name", accessor: "Name" },
-    { label: "Category", accessor: "Category" },
+    { label: "Product Type", accessor: "Product_Type" },
     { label: "Base Price", accessor: "Base_Price" },
     { label: "Description", accessor: "Description" },
     { label: "Created At", accessor: "Created_At" },
     { label: "Updated At", accessor: "Updated_At" },
+    {
+      label: "Action",
+      accessor: "row",
+      render: (row: any) => {
+        return (
+          <DropDownForActions
+            items={[
+              {
+                icon: (
+                  <DriveFileRenameOutlineIcon fontSize="inherit" color="primary" sx={{ fontSize: "12px" }} />
+                ),
+                label: "Update",
+                onClick: () => handleOpenUpdate(row),
+              },
+              {
+                icon: (
+                  <DeleteIcon
+                    fontSize="inherit"
+                    color="error"
+                    sx={{ fontSize: "12px" }}
+                  />
+                ),
+                label: "Delete",
+                onClick: () => {
+                  setSelectedProduct(row);
+                  setIsDeleteModalOpen(true);
+                },
+              },
+            ]}
+          />
+        );
+      },
+    },
   ];
 
-  const onSearchAppointment = (searchTerm: string) => {
-    dispatch(getAllProducts({ search: searchTerm, filter: appointmentsFilter }))
+  const onSearchProduct = (searchTerm: string) => {
+    dispatch(getAllProducts({ search: searchTerm, filter: productsFilter }))
       .unwrap()
       .then(() => console.log("Search complete"))
       .catch((err) => console.error("Search Error", err));
   };
 
-  const searchFunc = useCallback(_debounce(onSearchAppointment, 500), [
-    appointmentsFilter,
-  ]);
+  const searchFunc = useCallback(_debounce(onSearchProduct, 500), [productsFilter]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -89,7 +126,7 @@ const AdminProductsTable = () => {
   };
 
   const handleSelectChange = (value: string) => {
-    setAppointmentsFilter(value);
+    setProductsFilter(value);
   };
 
   const filters: FilterConfig[] = [
@@ -107,9 +144,12 @@ const AdminProductsTable = () => {
 
   const buttons: ButtonConfig[] = [
     {
-      label: "Add Product",
+      label: "Create Product", 
       variant: "contained",
-      onClick: () => setOpenAppointmentModal(true),
+      onClick: () => {
+        setSelectedProduct(null);  
+        setOpenProductModal(true); 
+      },
       size: "sm",
       sx: {
         backgroundColor: "#FBC02D !important",
@@ -122,6 +162,25 @@ const AdminProductsTable = () => {
     },
   ];
 
+  const handleOpenUpdate = (row: any) => {
+    setSelectedProduct(row);
+    setOpenProductModal(true);
+  };
+
+  const handleProductDelete = (productId: string) => {
+    dispatch(deleteProduct(productId))
+      .unwrap()
+      .then(() => {
+        setIsDeleteModalOpen(false);
+        console.log("Product deleted successfully");
+      })
+      .catch((err) => {
+        console.error("Error deleting product:", err);
+        setIsDeleteModalOpen(false);
+      });
+  };
+  
+
   return (
     <>
       <GenericTable
@@ -130,23 +189,38 @@ const AdminProductsTable = () => {
         title="Products"
         loading={loadingproductsData}
         buttons={buttons}
-        handleSearchChange={handleSearchChange}
+       
         filters={filters}
-        searchStyle={{
-          width: "62%",
-          height: "29px",
-          borderRadius: "50px",
-        }}
       />
 
       <CustomModal
-        open={openAppointmentModal}
-        title={"Add Product"}
-        handleClose={() => setOpenAppointmentModal(false)}
+        open={openProductModal}
+        title={selectedProduct ? "Update Product" : "Create Product"}
+        handleClose={() => setOpenProductModal(false)}
         modalWidth="70%"
       >
-        <AddAppointment handleClose={() => setOpenAppointmentModal(false)} />
+        {selectedProduct ? (
+          <EditProduct
+            product={selectedProduct}
+            handleClose={() => setOpenProductModal(false)}
+          />
+        ) : (
+          <AddProduct
+            handleClose={() => setOpenProductModal(false)}
+          />
+        )}
       </CustomModal>
+
+      <TransitionsDialog
+        open={isDeleteModalOpen}
+        heading="Delete Product"
+        description="Are you sure you want to delete this product?"
+        cancel={() => {
+          setSelectedProduct(null);
+          setIsDeleteModalOpen(false);
+        }}
+        proceed={() => handleProductDelete(selectedProduct?.productId)}
+      />
     </>
   );
 };

@@ -11,7 +11,7 @@ import { AppDispatch } from "@/redux/store";
 import * as Yup from "yup";
 import { ThreeDots } from "react-loader-spinner";
 import GenericDropDown from "@/_components/common/InputField/GenericDropDown";
-import  createCategory, { addCategory } from "../../../redux/slices/categoriesSlice";
+import createCategory, { addCategory } from "../../../redux/slices/categoriesSlice";
 
 type CategoryFormProps = {
    handleClose: () => void;
@@ -51,38 +51,38 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
 
    const formik = useFormik({
       initialValues: {
-        name: "",
-        gender: "",
-        attachment: "",
+         name: "",
+         gender: "",
+         attachment: "",
       },
       validationSchema: Yup.object().shape({
-        name: Yup.string().required("Category name is required"),
-        gender: Yup.string().required("Gender is required"),
+         name: Yup.string().required("Category name is required"),
+         gender: Yup.string().required("Gender is required"),
       }),
       onSubmit: async (data: any) => {
-        const payload = {
-          ...data,
-          attachment: imageUrl,
-        };
-       
-        setLoading(true);
-        try {
-          await dispatch(addCategory(payload)).unwrap();
-          toast(
-            isUpdate
-              ? "Category updated successfully"
-              : "Category created successfully",
-            { type: "success" }
-          );
-          handleClose();
-        } catch (error: any) {
-          toast.error(error.message || "Failed to create category");
-          console.error("Error:", error);
-        } finally {
-          setLoading(false);
-        }
+         const payload = {
+            ...data,
+            attachment: imageUrl,
+         };
+
+         setLoading(true);
+         try {
+            await dispatch(addCategory(payload)).unwrap();
+            toast(
+               isUpdate
+                  ? "Category updated successfully"
+                  : "Category created successfully",
+               { type: "success" }
+            );
+            handleClose();
+         } catch (error: any) {
+            toast.error(error.message || "Failed to create category");
+            console.error("Error:", error);
+         } finally {
+            setLoading(false);
+         }
       },
-    });
+   });
    return (
       <Box
          style={{
@@ -139,17 +139,24 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
                      {/* Gender Field with Dropdown */}
                      <Grid size={{ xs: 12, md: 12 }} component="div">
                         <GenericDropDown
+                           label="Type"
                            name="gender"
                            value={formik.values.gender}
-                           onChange={formik.handleChange("gender")}
-                           onBlur={formik.handleBlur("gender")}
+                           onChange={formik.handleChange}
+                           onBlur={formik.handleBlur}
                            error={formik.touched.gender && Boolean(formik.errors.gender)}
                            helperText={
                               formik.touched.gender && typeof formik.errors.gender === "string"
                                  ? formik.errors.gender
                                  : undefined
                            }
+                           options={[
+                              { label: "Men", value: "MEN" },
+                              { label: "Women", value: "WOMEN" },
+                              { label: "Unisex", value: "UNISEX" },
+                           ]}
                         />
+
                      </Grid>
                   </Grid>
                </Grid>

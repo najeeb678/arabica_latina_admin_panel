@@ -6,7 +6,7 @@ import {
   Typography,
   SxProps,
   Theme,
-  SelectChangeEvent, // Import the correct event type
+  SelectChangeEvent,
 } from "@mui/material";
 
 type Option = {
@@ -14,11 +14,11 @@ type Option = {
   value: string | number;
 };
 
-type GenericDropDownProps = {
-  label?: string; // Dynamic label
+type CategoryDropDownProps = {
+  label?: string;
   name: string;
   value: string | number;
-  onChange: (event: SelectChangeEvent<string | number>) => void; // Use SelectChangeEvent
+  onChange: (event: SelectChangeEvent<string | number>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   disabled?: boolean;
   error?: boolean;
@@ -26,9 +26,10 @@ type GenericDropDownProps = {
   sx?: SxProps<Theme>;
   labelStyle?: SxProps<Theme>;
   options: Option[];
+  placeholder?: string; // New placeholder prop
 };
 
-const GenericDropDown: React.FC<GenericDropDownProps> = ({
+const CategoryDropDown: React.FC<CategoryDropDownProps> = ({
   label,
   name,
   value,
@@ -40,6 +41,7 @@ const GenericDropDown: React.FC<GenericDropDownProps> = ({
   sx,
   labelStyle,
   options,
+  placeholder = "Select an option", // Default placeholder
 }) => {
   return (
     <>
@@ -61,7 +63,7 @@ const GenericDropDown: React.FC<GenericDropDownProps> = ({
           id={name}
           name={name}
           value={value}
-          onChange={onChange} // Fix applied here
+          onChange={onChange}
           onBlur={onBlur}
           disabled={disabled}
           displayEmpty
@@ -74,6 +76,7 @@ const GenericDropDown: React.FC<GenericDropDownProps> = ({
             "& .MuiSelect-icon": { color: "#393939" },
           }}
         >
+          <MenuItem value="" disabled>{placeholder}</MenuItem> {/* Placeholder item */}
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
@@ -90,4 +93,4 @@ const GenericDropDown: React.FC<GenericDropDownProps> = ({
   );
 };
 
-export default GenericDropDown;
+export default CategoryDropDown;

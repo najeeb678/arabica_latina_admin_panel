@@ -9,7 +9,7 @@ import { RiArrowDropDownLine, RiArrowDropRightLine } from "react-icons/ri";
 
 import ProfileMenu from "../NavBar/ProfileMenu";
 
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+
 
 const AccessPanel = () => {
   const router = useRouter();
@@ -18,13 +18,7 @@ const AccessPanel = () => {
   const [isClient, setIsClient] = useState(false);
   const [role, setRole] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const fetchRole = async () => {
-  //     const fetchedRole = await getRole();
-  //     setRole(fetchedRole);
-  //   };
-  //   fetchRole();
-  // }, []);
+
   const sidebarData = getSidebarData(role);
   useEffect(() => {
     setIsClient(true);
@@ -250,7 +244,7 @@ const AccessPanel = () => {
         }}
       >
         {/* Notifications */}
-        <Box
+        {/* <Box
           onClick={() => {
             router.push("/notifications");
           }}
@@ -269,11 +263,11 @@ const AccessPanel = () => {
             },
           }}
         >
-          {/* <Badge badgeContent={unreadNotificationCount} color="warning">
+          <Badge badgeContent={unreadNotificationCount} color="warning">
             <NotificationsNoneOutlinedIcon
               sx={{ color: "#7B7B7B", width: "26px", height: "26px" }}
             />
-          </Badge> */}
+          </Badge>
           <CustomTypography
             className="text"
             sx={{
@@ -286,7 +280,7 @@ const AccessPanel = () => {
           >
             Notifications
           </CustomTypography>
-        </Box>
+        </Box> */}
 
         {/* Profile */}
         <Box
@@ -305,7 +299,7 @@ const AccessPanel = () => {
             },
           }}
         >
-          {/* <ProfileMenu showText /> */}
+          <ProfileMenu showText />
         </Box>
       </Box>
     </Box>

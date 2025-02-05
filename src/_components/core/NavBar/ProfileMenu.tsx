@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Avatar,
@@ -10,7 +9,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { getUserDetails } from "@/utils/utils";
-
+import cookies from "next-cookies";
 
 const ProfileMenu = ({ showText = false }: { showText?: boolean }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -40,8 +39,10 @@ const ProfileMenu = ({ showText = false }: { showText?: boolean }) => {
   };
 
   const handleLogout = () => {
-    handleMenuClose();
     localStorage.clear();
+
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
     router.push("/authentication/sign-in");
   };
 

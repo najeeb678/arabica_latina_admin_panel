@@ -1,5 +1,6 @@
 import api from "@/services/api";
 
+import cookies from "next-cookies";
 // Sign In
 export const signIn = async (credentials: { email: string, password: string }) => {
    try {
@@ -17,6 +18,8 @@ export const signIn = async (credentials: { email: string, password: string }) =
       // Store the userDetails object in localStorage
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       localStorage.setItem("token", response?.data.data?.access_token);
+      document.cookie = `token=${response?.data.data?.access_token}; path=/; max-age=86400`; 
+
 
       return response.data;
    } catch (error) {

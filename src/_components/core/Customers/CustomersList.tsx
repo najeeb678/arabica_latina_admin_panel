@@ -14,7 +14,7 @@ const CustomersList = () => {
   // Adjusted for correct state mapping
   const { customers, status, error } = useSelector((state: RootState) => state.customers);
 
-  const [processedCustomers, setProcessedCustomers] = useState<CustomersType[]>([]);
+  const [processedCustomers, setProcessedCustomers] = useState<any[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomersType | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 

@@ -14,8 +14,8 @@ const OrdersList = () => {
 
    const { orders, status, error } = useSelector((state: RootState) => state.orders);
 
-   const [processedOrders, setProcessedOrders] = useState<OrdersType[]>([]);
-   const [selectedOrder, setSelectedOrder] = useState<OrdersType | null>(null);
+   const [processedOrders, setProcessedOrders] = useState<any[]>([]);
+   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
    const [isAddOrderFormOpen, setIsAddOrderFormOpen] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ const OrdersList = () => {
       {
          label: "Sr_No",
          accessor: "Sr_No",
-         render: (value: number, row: OrdersType) => {
+         render: (value: number, row: any) => {
             return (
                <Box display="flex" alignItems="center" justifyContent="center" gap="5px">
                   <CustomCheckbox
@@ -107,7 +107,7 @@ const OrdersList = () => {
       {
          label: "Status",
          accessor: "status", 
-         render: (value: string, row: OrdersType) => {
+         render: (value: string, row: any) => {
             const options = [
                { value: "PENDING", label: "Pending", color: "#FBC02D" },  
                { value: "CONFIRMED", label: "Confirmed", color: "#4CAF50" },  

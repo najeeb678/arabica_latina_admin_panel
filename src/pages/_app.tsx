@@ -5,7 +5,7 @@ import { AppProps } from "next/app";
 import { Raleway } from "next/font/google";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
-import { ProtectRoute } from "@/auth";
+import ProtectRoute from "@/auth";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -18,10 +18,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={`${raleway.className}`}>
       <Provider store={store}>
-      <ProtectRoute>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ProtectRoute>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </ProtectRoute>
       </Provider>
     </div>

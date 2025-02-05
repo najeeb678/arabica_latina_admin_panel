@@ -1,43 +1,38 @@
-import React, { useEffect, useState } from "react";
+// auth/ProtectRoute.tsx
 import { useRouter } from "next/router";
+import { CircularProgress } from "@mui/material";
+import { useState, useEffect } from "react";
 
 interface ProtectRouteProps {
   children: React.ReactNode;
 }
 
-export const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
+const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
-  const publicRoutes = ["/authentication/sign-in"];
-  const protectedRoutes = [
-    "/",
-    "products/",
-    "schedule/",
-    "products-variants/,",
-    "orders/,",
-    "customers/",
-  ];
-
-  const isRouteProtected = (route: string) =>
-    protectedRoutes.some((protectedRoute) => route.startsWith(protectedRoute));
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    setLoading(false); 
+  }, []);
 
-    if (!token && isRouteProtected(router.pathname)) {
-      router.replace("/authentication/sign-in");
-    } else if (token && publicRoutes.includes(router.pathname)) {
-      router.replace("/");
-    }
-
-  
-    setLoading(false);
-  }, [router.pathname]);
 
   if (loading) {
-    return null;
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#fbc02d",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
   }
 
-  return <>{children}</>;
+  return <>{children}</>; 
 };
+
+export default ProtectRoute;

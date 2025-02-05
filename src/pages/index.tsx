@@ -1,8 +1,22 @@
 import Head from "next/head";
-import Image from "next/image";
-import localFont from "next/font/local";
-import Categories from "@/_components/core/categoriesList/categoriesList";
 
+import Categories from "@/_components/core/categoriesList/categoriesList";
+import { GetServerSideProps } from "next";
+import cookies from "next-cookies";
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { token } = cookies({ req });
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/authentication/sign-in",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
 export default function Home() {
   return (
     <>
@@ -12,7 +26,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.svg" />
       </Head>
-     <Categories/>
+      <Categories />
     </>
   );
 }

@@ -18,6 +18,7 @@ export type Column<T> = {
   action?: (row: T) => React.JSX.Element;
   render?: (value: any, row: T) => React.ReactNode;
 };
+
 export type FilterConfig = {
   label: string | React.ReactNode; 
   options: { label: string; value: string }[];

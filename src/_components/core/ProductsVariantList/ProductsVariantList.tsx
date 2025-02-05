@@ -17,7 +17,7 @@ const ProductVariantsList = () => {
    const dispatch = useDispatch<AppDispatch>();
 
    const { ProductVariants, loading } = useSelector((state: RootState) => state.productsVariants);
-   const [processedVariants, setProcessedVariants] = useState<ProductVariantsType[]>([]);
+   const [processedVariants, setProcessedVariants] = useState<any[]>([]);
    const [selectedVariant, setSelectedVariant] = useState<ProductVariantsType | null>(null);
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
    const [isAddProductVariantFormOpen, setisAddProductVariantFormOpen] = useState<boolean>(false);
@@ -52,7 +52,7 @@ const ProductVariantsList = () => {
       {
          label: "Sr_No",
          accessor: "Sr_No",
-         render: (value: number, row: ProductVariantsType) => {
+         render: (value: number, row: any) => {
             return (
                <Box display="flex" alignItems="center" justifyContent="center" gap="5px">
                   <CustomCheckbox
@@ -84,7 +84,7 @@ const ProductVariantsList = () => {
       {
          label: "Actions",
          accessor: "actions",
-         render: (_: any, row: ProductVariantsType) => (
+         render: (_: any, row: any) => (
             <DropDownForActions
                items={[
                   {

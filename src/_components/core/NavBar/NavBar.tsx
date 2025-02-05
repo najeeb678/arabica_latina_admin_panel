@@ -18,7 +18,7 @@ const NavBar = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#E2CBA280",
+
         height: "70px",
 
         padding: "0px 25px 0px 10px",
@@ -63,7 +63,7 @@ const NavBar = () => {
         }}
       >
         {/* <Notifications /> */}
-        {/* <ProfileMenu /> */}
+        <ProfileMenu />
       </Box>
       <Drawer
         anchor="left"
@@ -104,7 +104,7 @@ const NavBar = () => {
         >
           <Box>
             <img
-              src="/images/weblogo%201.svg"
+              src="/logo.svg"
               alt="web logo"
               style={{
                 width: "130px",

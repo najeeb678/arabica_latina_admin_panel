@@ -246,7 +246,12 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 value={formik.values.productType}
                 onChange={(event) => formik.setFieldValue("productType", event.target.value)}
               />
-
+              {formik.touched.productType && formik.errors.productType && <span className="error-message" style={{
+                color: 'red',
+                fontSize: '12px',
+                marginTop: '5px',
+                display: 'inline-block',
+              }}>{formik.errors.productType}</span>}
             </Grid>
 
           </Grid>

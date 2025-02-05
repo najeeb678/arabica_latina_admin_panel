@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import GenericTable from "@/_components/common/GenericTable";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
 import { Box } from "@mui/material";
-import { fetchOrdersAsync } from "../../../redux/slices/OrdersSlice"; 
+import { fetchOrdersAsync, updateOrderStatusAsync } from "../../../redux/slices/OrdersSlice";
 import { RootState, AppDispatch } from "../../../redux/store";
 import { Orders as OrdersType } from "@/types/types";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
@@ -12,7 +12,6 @@ import StatusDropdown from "@/_components/common/SelectDropdown/StatusDropdown";
 const OrdersList = () => {
    const dispatch = useDispatch<AppDispatch>();
 
-   // Adjusted for correct state mapping
    const { orders, status, error } = useSelector((state: RootState) => state.orders);
 
    const [processedOrders, setProcessedOrders] = useState<OrdersType[]>([]);
@@ -21,39 +20,34 @@ const OrdersList = () => {
    const [isAddOrderFormOpen, setIsAddOrderFormOpen] = useState<boolean>(false);
 
    useEffect(() => {
-      dispatch(fetchOrdersAsync()); // Fetch orders on component mount
+      dispatch(fetchOrdersAsync());
    }, [dispatch]);
 
+   // Update processedOrders when the orders in Redux store change
    useEffect(() => {
       if (orders) {
-         // Create a new array with product names added to each order
          const updatedOrders = orders.map((order: any, index: number) => {
-            // Concatenate all product names in the order
             const productNames = order.orderItems
-               .map((item: any) => item.variant?.product?.name) // Extract product names
-               .join(", "); // Join names with a comma (you can customize the separator)
-               console.log()
+               ? order.orderItems.map((item: any) => item.variant?.product?.name).join(", ")
+               : ""; // Default to an empty string if orderItems is undefined or null
             return {
                ...order,
                Sr_No: index + 1,
-               productNames, // Add the concatenated product names to the order
+               productNames,
             };
          });
-   
-         // Log the updated orders to verify
-         console.log("updatedOrders: ", updatedOrders);
-   
-         // Set the processed orders with product names included
+         console.log("updatedOrders:", updatedOrders);
          setProcessedOrders(updatedOrders);
       }
    }, [orders]);
-   
-   
-
+    
 
    const handleDeleteOrder = () => {
-         console.log("Selected order ID");
-      
+      console.log("Selected order ID");
+   };
+
+   const handleStatusChange = (newStatus: string, orderId: string) => {
+      dispatch(updateOrderStatusAsync({ orderId, status: newStatus }));
    };
 
    const columns = [
@@ -74,19 +68,19 @@ const OrdersList = () => {
       },
       {
          label: "Product Name",
-         accessor: "productNames",  // Access the concatenated product names here
-         render: (value: string) => <span>{value}</span>,  // Render the concatenated product names
+         accessor: "productNames",  
+         render: (value: string) => <span>{value}</span>, 
       },
       {
          label: "Address",
-         accessor: "address", // Directly referencing address field
+         accessor: "address", 
          render: (value: string) => {
             return <span>{value}</span>;
          },
       },
       {
          label: "Contact Number",
-         accessor: "contactNumber", // Directly referencing contactNumber field
+         accessor: "contactNumber",
          render: (value: string) => {
             return <span>{value}</span>;
          },
@@ -112,34 +106,28 @@ const OrdersList = () => {
       },
       {
          label: "Status",
-         accessor: "status",  // Access the status field
+         accessor: "status", 
          render: (value: string, row: OrdersType) => {
             const options = [
-               { value: "pending", label: "Pending", color: "#FBC02D" },
-               { value: "shipped", label: "Shipped", color: "#4CAF50" },
-               { value: "delivered", label: "Delivered", color: "#2196F3" },
-               { value: "canceled", label: "Canceled", color: "#F44336" },
+               { value: "PENDING", label: "Pending", color: "#FBC02D" },  
+               { value: "CONFIRMED", label: "Confirmed", color: "#4CAF50" },  
+               { value: "DISPATCHED", label: "Dispatched", color: "#2196F3" }, 
+               { value: "DELIVERED", label: "Delivered", color: "#00897B" }, 
+               { value: "CANCELLED", label: "Cancelled", color: "#E64A19" }, 
             ];
-   
-            const handleStatusChange = (newStatus: string) => {
-               // Logic to handle status change, like updating state or sending a request
-               console.log(`Status for order ${row.Sr_No} changed to: ${newStatus}`);
-            };
-   
+      
             return (
                <StatusDropdown
                   options={options}
-                  selectedValue={value}
-                  onChange={handleStatusChange}
-                  label="Order Status"
-                  sx={{ width: "100%",}} 
+                  selectedValue={value} 
+                  onChange={(newStatus: string) => handleStatusChange(newStatus, row.orderId)}
+                  sx={{ width: "100%" }} 
                />
             );
          },
-      },
+      }
    ];
 
-  
    return (
       <>
          <GenericTable

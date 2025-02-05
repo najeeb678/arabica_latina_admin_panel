@@ -11,7 +11,7 @@ import { AppDispatch } from "@/redux/store";
 import * as Yup from "yup";
 import { ThreeDots } from "react-loader-spinner";
 import GenericDropDown from "@/_components/common/InputField/GenericDropDown";
-import createCategory, { addCategory } from "../../../redux/slices/categoriesSlice";
+import { addCategory } from "../../../redux/slices/categoriesSlice";
 
 type CategoryFormProps = {
    handleClose: () => void;
@@ -57,7 +57,7 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
       },
       validationSchema: Yup.object().shape({
          name: Yup.string().required("Category name is required"),
-         gender: Yup.string().required("Gender is required"),
+         gender: Yup.string().required("Type is required"),
       }),
       onSubmit: async (data: any) => {
          const payload = {
@@ -154,6 +154,7 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
                               { label: "Men", value: "MEN" },
                               { label: "Women", value: "WOMEN" },
                               { label: "Unisex", value: "UNISEX" },
+                              { label: "Other", value: "OTHER" },
                            ]}
                         />
 

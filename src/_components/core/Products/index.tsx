@@ -144,17 +144,20 @@ const AdminProductsTable = () => {
 
   const buttons: ButtonConfig[] = [
     {
-      label: "Create Product", 
+      label: "Create Product",
       variant: "contained",
       onClick: () => {
-        setSelectedProduct(null);  
-        setOpenProductModal(true); 
+        setSelectedProduct(null);
+        setOpenProductModal(true);
       },
       size: "sm",
       sx: {
         backgroundColor: "#FBC02D !important",
         borderRadius: "50px !important",
         boxShadow: "none",
+        whiteSpace: "nowrap !important",
+        transform: 'none !important',
+        width: 'auto !important',
         "&:hover": {
           color: "white !important",
         },
@@ -179,7 +182,7 @@ const AdminProductsTable = () => {
         setIsDeleteModalOpen(false);
       });
   };
-  
+
 
   return (
     <>
@@ -189,7 +192,7 @@ const AdminProductsTable = () => {
         title="Products"
         loading={loadingproductsData}
         buttons={buttons}
-       
+
         filters={filters}
       />
 

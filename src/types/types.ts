@@ -110,6 +110,7 @@ export type Orders = {
   status: string;
   is_Active: boolean;
   productName: string;
+  orderId: string;
 }
 
 export interface Customers {

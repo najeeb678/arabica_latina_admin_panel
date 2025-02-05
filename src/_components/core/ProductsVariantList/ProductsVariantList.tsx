@@ -11,6 +11,7 @@ import { ProductVariants as ProductVariantsType, ButtonConfig } from "@/types/ty
 import { Modal } from "@mui/material";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
 import ProductVariantForm from "./ProductVariantForm";
+import CustomModal from "@/_components/common/CustomModal/CustomModal";
 
 const ProductVariantsList = () => {
    const dispatch = useDispatch<AppDispatch>();
@@ -112,10 +113,12 @@ const ProductVariantsList = () => {
          size: "sm",
          textColored: true,
          sx: {
-            width: '150px !important',
+            width: 'auto !important',
             backgroundColor: "#FBC02D !important",
             borderRadius: "50px !important",
             boxShadow: "none",
+            whiteSpace: "nowrap !important",
+            transform: 'none',
             "&:hover": {
                color: "white !important",
             },
@@ -140,31 +143,18 @@ const ProductVariantsList = () => {
             showPagination={true}
          />
 
-         <Modal
+         <CustomModal
             open={isAddProductVariantFormOpen}
-            onClose={handleCloseForm}
-            aria-labelledby="add-category-form-modal"
-            aria-describedby="add-category-form-description"
+            title={"Create Product Variant"}
+            modalWidth="40%"
+            handleClose={() => {
+               setisAddProductVariantFormOpen(false);  
+               dispatch(fetchProductVariants());     
+             }}
+             
          >
-            <Box
-               sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  maxWidth: 800,
-                  maxHeight: "90vh",
-                  overflowY: 'auto',
-                  bgcolor: "background.paper",
-                  borderRadius: 2,
-                  boxShadow: 24,
-                  p: 4,
-
-               }}
-            >
                <ProductVariantForm handleClose={handleCloseForm} />
-            </Box>
-         </Modal>
+         </CustomModal>
 
          <TransitionsDialog
             heading="Confirm Delete"

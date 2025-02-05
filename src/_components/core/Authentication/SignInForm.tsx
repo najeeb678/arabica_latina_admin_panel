@@ -1,371 +1,130 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import { useFormik } from "formik";
-import Image from "next/image";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';  
+import { signInThunk } from '../../../redux/slices/authSlice';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
+import { RootState } from '../../../redux/store';
+import { AppDispatch } from '../../../redux/store';
+import { TextField, Button, CircularProgress, Box, Typography } from '@mui/material';
+import Image from 'next/image';  
 
-import * as Yup from "yup";
-import { ThreeDots } from "react-loader-spinner";
-import { loginUser } from "@/redux/slices/authSlice";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/router";
+const validationSchema = Yup.object({
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required'),
 
-import OTPCodeInputField from "./OTPCodeInputField";
-import ResetEmailInput from "./ResetEmailInput";
-import ResetPassword from "./PasswordResetForm";
-import GenericInput from "@/_components/common/InputField/GenericInput";
-import CustomTypography from "@/_components/common/CustomTypography/CustomTypography";
-import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
-
-import { MdOutlineMail } from "react-icons/md";
-import { IoEyeOutline } from "react-icons/io5";
-import { Box } from "@mui/system";
-import Grid from "@mui/material/Grid2";
-import { Typography, Button } from "@mui/material";
-import GenericPassword from "@/_components/common/GenericPasswordField";
+  password: Yup.string()
+    .required('Password is required')
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/[0-9]/, 'Password must contain at least one digit')
+    .matches(/[^A-Za-z0-9]/, 'Password must contain at least one special character')
+    .min(8, 'Password must be at least 8 characters long'),
+});
 
 const SignInForm = () => {
-  const router = useRouter();
-  const dispatch: any = useDispatch();
   const [loading, setLoading] = useState(false);
-  const currentYear = new Date().getFullYear();
-  const [forgotPassword, setForgotPassword] = useState(false);
-  const [isDisplayOTP, setisDisplayOTP] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
-  const [ShowResetPasswordForm, setShowResetPasswordForm] = useState(false);
-  const [emailAddress, setEmailAddress] = useState("");
+  const { token, error } = useSelector((state: RootState) => state.auth);
 
-  const roles = [
-    {
-      id: 1,
-      name: "Admin",
-    },
-    {
-      id: 2,
-      name: "Doctor",
-    },
-  ];
   const formik = useFormik({
     initialValues: {
-      username: "",
-      password: "",
-      role: null,
+      email: '',
+      password: '',
     },
-
-    onSubmit: async (data: any) => {
-      const payload = {
-        ...data,
-        role: data.role.name,
-      };
-
+    validationSchema, 
+    onSubmit: async (values) => {
       setLoading(true);
-
       try {
-        const res = await dispatch(loginUser(payload)).unwrap();
-        setLoading(false);
-        toast("Signed in successfully", { type: "success" });
-        router.push("/");
+        const response = await dispatch(signInThunk(values)); 
+        if (response.type === 'auth/signIn/fulfilled') {
+          toast('Signed in successfully!', { type: 'success' });
+          router.push('/'); 
+        }
       } catch (error: any) {
-        toast.error(error?.message);
+        // Capture error message here
+        const errorMessage = error.response?.data?.message || 'Failed to sign in. Please try again.';
+        toast.error(errorMessage);
+      } finally {
         setLoading(false);
-        console.error("Error during login:", error);
       }
     },
-
-    validationSchema: Yup.object({
-      username: Yup.string()
-        .email("Invalid email")
-        .required("Username is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .min(8, "Password must be at least 8 characters")
-        .matches(/[A-Z]/, "Password must include at least one uppercase letter")
-        .matches(/[a-z]/, "Password must include at least one lowercase letter")
-        .matches(
-          /[@$!%*?&#]/,
-          "Password must include at least one special character"
-        ),
-      role: Yup.object()
-        .shape({
-          id: Yup.number().required(),
-          name: Yup.string().required(),
-        })
-        .nullable()
-        .required("Role is required"),
-    }),
   });
-  const handleForgotPassword = () => {
-    setForgotPassword(true);
-  };
 
   return (
-    <Grid container sx={{ height: "100vh", width: "100vw" }}>
-      {/* Left half with image */}
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        component="div"
-        sx={{
-          display: { xs: "none", md: "flex" },
-          alignItems: "start",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src="/images/SignIn.png"
-          alt="Sign In"
-          style={{ width: "100%", height: "100vh", objectFit: "cover" }}
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 400,
+        margin: '0 auto',
+        padding: 3,
+        backgroundColor: 'white',
+        borderRadius: 2,
+        boxShadow: 3,
+      }}
+    >
+      {/* Logo */}
+      <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
+        <Image
+          src="/logo.svg"  // Path to your logo in the public folder
+          alt="Logo"
+          width={150}  // Adjust the width of the logo as per your requirement
+          height={50}  // Adjust the height of the logo as per your requirement
         />
-      </Grid>
+      </Box>
 
-      {/* Right half with form */}
+      {/* Sign In Form */}
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          fullWidth
+          margin="normal"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+        />
+        <TextField
+          label="Password"
+          name="password"
+          type="password"
+          fullWidth
+          margin="normal"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+        />
 
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        component="div"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Box
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          disabled={loading}
           sx={{
-            maxWidth: "100%",
-            width: "100%",
-            position: "relative",
+            marginTop: 2,
+            backgroundColor: '#fbc02d', 
+            '&:hover': {
+              backgroundColor: '#f9b72d', 
+            },
           }}
         >
-          <Box
-            sx={{
-              textAlign: "center",
-              marginTop: forgotPassword
-                ? ShowResetPasswordForm
-                  ? { xs: "50px", md: "60px", xl: "150px" }
-                  : { xs: "50px", md: "60px", xl: "150px" }
-                : { xs: "20px", md: "40px", xl: "150px" },
-            }}
-          >
-            <Image
-              src="/images/mologo 3.svg"
-              alt="Logo"
-              width={168}
-              height={163}
-              className="responsive-logo"
-              priority
-            />
-          </Box>
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+        </Button>
 
-          <CustomTypography
-            textAlign="center"
-            sx={{
-              fontFamily: "Avenir",
-              fontSize: { xs: "18px", md: "24px" },
-              fontWeight: "800",
-              lineHeight: "28.6px",
-              marginTop: "34px",
-            }}
-          >
-            {forgotPassword
-              ? isDisplayOTP
-                ? ShowResetPasswordForm
-                  ? "Reset Password"
-                  : "Verification"
-                : "Reset Password"
-              : " Sign In to your account"}
-          </CustomTypography>
-          <CustomTypography
-            fontSize="12px"
-            textAlign="center"
-            sx={{
-              fontFamily: "Avenir",
-              fontWeight: "500",
-              lineHeight: "15.96px",
-              color: "#7B7B7B",
-              marginTop: "5px",
-            }}
-          >
-            {forgotPassword
-              ? isDisplayOTP
-                ? ShowResetPasswordForm
-                  ? "Create a new password to get into your account!"
-                  : "We have sent you an OTP to your email"
-                : "Enter your email address to reset your password"
-              : "  Enter your details to proceed further"}
-          </CustomTypography>
-          {!forgotPassword ? (
-            <Box
-              component="form"
-              noValidate
-              onSubmit={formik.handleSubmit}
-              sx={{
-                maxWidth: "388px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                margin: "0 auto",
-                marginTop: "20px",
-                gap: "2px",
-              }}
-            >
-              <GenericInput
-                name="username"
-                type="text"
-                value={formik.values.username}
-                onChange={formik.handleChange("username")}
-                onBlur={formik.handleBlur("username")}
-                placeholder="Email"
-                icon={<MdOutlineMail />}
-                inputfieldHeight="55px"
-                sx={{ margin: "0px" }}
-              />
-              {formik.touched.username && formik.errors.username && (
-                <Typography color="error" variant="caption">
-                  {typeof formik.errors.username === "string"
-                    ? formik.errors.username
-                    : ""}
-                </Typography>
-              )}
-              <GenericPassword
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange("password")}
-                onBlur={formik.handleBlur("password")}
-                placeholder="Password"
-                inputfieldHeight="55px"
-              />
-              {formik.touched.password && formik.errors.password && (
-                <Typography
-                  color="error"
-                  variant="caption"
-                  sx={{ marginTop: "-5px" }}
-                >
-                  {typeof formik.errors.password === "string"
-                    ? formik.errors.password
-                    : ""}
-                </Typography>
-              )}
-
-              <SingleSelect
-                // title="Role"
-                textFieldLabel="Select Role"
-                data={roles}
-                onChange={(value) => formik.setFieldValue("role", value)}
-                onBlur={formik.handleBlur("role")}
-                name="role"
-                value={formik.values.role}
-                add={true}
-                disabled={false}
-                sx={{ borderRadius: "5px", height: "55px", marginTop: "2px" }}
-              />
-              <Box sx={{ height: "2px" }}></Box>
-              {formik.touched.role && formik.errors.role && (
-                <Typography color="error" variant="caption">
-                  {typeof formik.errors.role === "string"
-                    ? formik.errors.role
-                    : ""}
-                </Typography>
-              )}
-              <Box onClick={() => handleForgotPassword()}>
-                <CustomTypography
-                  fontSize="12px"
-                  color="#E90000"
-                  sx={{
-                    fontFamily: "Avenir",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                  }}
-                >
-                  Forget Password?
-                </CustomTypography>
-              </Box>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={loading}
-                sx={{
-                  textTransform: "capitalize",
-                  borderRadius: "57px",
-                  fontWeight: "500",
-                  fontSize: "16px",
-                  padding: "12px 10px",
-                  color: "#fff !important",
-                  backgroundColor: "#FBC02D",
-                  boxShadow: "none",
-                  mt: 2,
-                }}
-              >
-                {loading ? (
-                  <ThreeDots
-                    height="28"
-                    width="40"
-                    radius="9"
-                    color="#FFFFFF"
-                    ariaLabel="three-dots-loading"
-                    visible
-                  />
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </Box>
-          ) : isDisplayOTP ? (
-            ShowResetPasswordForm ? (
-              <ResetPassword emailAddress={emailAddress} />
-            ) : (
-              <Box
-                sx={{
-                  maxWidth: "100%",
-                  width: "100%",
-                }}
-              >
-                <Box
-                  sx={{
-                    width: "388px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    margin: "0 auto",
-                    marginTop: "60px",
-                    gap: "2px",
-                  }}
-                >
-                  <OTPCodeInputField
-                    setShowResetPasswordForm={setShowResetPasswordForm}
-                    emailAddress={emailAddress}
-                  />
-                </Box>
-              </Box>
-            )
-          ) : (
-            <ResetEmailInput
-              setisDisplayOTP={setisDisplayOTP}
-              setForgotPassword={setForgotPassword}
-              setEmailAddress={setEmailAddress}
-            />
-          )}
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: "10px",
-              right: "20px",
-              zIndex: "1",
-            }}
-          >
-            <CustomTypography
-              fontSize="12px"
-              color="#475467"
-              sx={{
-                fontFamily: "Avenir",
-                fontWeight: "500",
-              }}
-            >
-              © Dr. Wafa’a Tulbah Clinics {currentYear}
-            </CustomTypography>
-          </Box>
-        </Box>
-      </Grid>
-    </Grid>
+        {error && <Typography color="error" align="center" sx={{ marginTop: 2 }}>{error}</Typography>}
+      </form>
+    </Box>
   );
 };
+
 
 export default SignInForm;

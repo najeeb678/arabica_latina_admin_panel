@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid2";
 import * as Yup from "yup";
 import { ThreeDots } from "react-loader-spinner";
 import { Autocomplete, TextField } from "@mui/material";
-import { getAllProducts } from "../../../redux/slices/productsSlice"; 
+import { getAllProducts } from "../../../redux/slices/productsSlice";
 import { AppDispatch } from "../../../redux/store";
 import { createProductVariant } from "../../../redux/slices/ProductVariantsSlice";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
@@ -24,7 +24,7 @@ interface ProductVariantFormProps {
 }
 
 const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, product }) => {
-  const dispatch = useDispatch<AppDispatch>(); 
+  const dispatch = useDispatch<AppDispatch>();
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
 
@@ -38,8 +38,8 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
       attachment: "",
       isDuotone: false,
       size: "",
-      stock: 0,
-      price: 0,
+      stock: "",
+      price: "",
     },
     validationSchema: Yup.object().shape({
       productId: Yup.string().required("Product is required"),
@@ -103,7 +103,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                         getOptionLabel={(option) => option.name || ""}
                         value={
                           productsData.find((product: { productId: string }) => product.productId === formik.values.productId) || null
-                        } 
+                        }
                         onChange={(event, value) => formik.setFieldValue("productId", value ? value.productId : "")}
                         renderInput={(params) => (
                           <TextField
@@ -115,8 +115,8 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                                 fontSize: "12px",
                                 height: "45px !important ",
                                 display: "flex",
-                                alignItems: "center", 
-                                padding: "0 12px !important", 
+                                alignItems: "center",
+                                padding: "0 12px !important",
                                 "& .MuiOutlinedInput-notchedOutline": {
                                   borderColor: "#D7D7D7",
                                 },
@@ -137,23 +137,23 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                         )}
                         fullWidth
                         sx={{
-                          fontSize: "12px !important", 
-                          height: "40px", 
+                          fontSize: "12px !important",
+                          height: "40px",
                           "& .MuiOutlinedInput-root": {
-                            fontSize: "12px", 
+                            fontSize: "12px",
                             height: "40px",
-                            display: "flex", 
-                            alignItems: "center", 
+                            display: "flex",
+                            alignItems: "center",
                             padding: "0 12px",
                           },
                           "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7", 
+                            borderColor: "#D7D7D7",
                           },
                           "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7", 
+                            borderColor: "#D7D7D7",
                           },
                           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7", 
+                            borderColor: "#D7D7D7",
                           },
                           "& .MuiSelect-icon": {
                             color: "#393939",
@@ -167,7 +167,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                       <span className="error-message">No products available</span>
                     )}
                     {formik.touched.productId && formik.errors.productId && (
-                      <span className="error-message">{formik.errors.productId}</span>
+                      <span className="error-message" style={{
+                        color: 'red',
+                        fontSize: '12px',
+                        marginTop: '15px',
+                        display: 'inline-block',
+                      }}>{formik.errors.productId}</span>
                     )}
                   </Grid>
 
@@ -182,7 +187,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                       onBlur={formik.handleBlur("color")}
                     />
                     {formik.touched.color && formik.errors.color && (
-                      <span className="error-message">{formik.errors.color}</span>
+                      <span className="error-message" style={{
+                        color: 'red',
+                        fontSize: '12px',
+                        marginTop: '5px',
+                        display: 'inline-block',
+                      }}>{formik.errors.color}</span>
                     )}
                   </Grid>
                 </Grid>
@@ -218,7 +228,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                     onBlur={formik.handleBlur("style")}
                   />
                   {formik.touched.style && formik.errors.style && (
-                    <span className="error-message">{formik.errors.style}</span>
+                    <span className="error-message" style={{
+                      color: 'red',
+                      fontSize: '12px',
+                      marginTop: '5px',
+                      display: 'inline-block',
+                    }}>{formik.errors.style}</span>
                   )}
                 </Grid>
 
@@ -233,7 +248,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                     onBlur={formik.handleBlur("size")}
                   />
                   {formik.touched.size && formik.errors.size && (
-                    <span className="error-message">{formik.errors.size}</span>
+                    <span className="error-message" style={{
+                      color: 'red',
+                      fontSize: '12px',
+                      marginTop: '5px',
+                      display: 'inline-block',
+                    }}>{formik.errors.size}</span>
                   )}
                 </Grid>
               </Grid>
@@ -250,7 +270,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                     onBlur={formik.handleBlur("stock")}
                   />
                   {formik.touched.stock && formik.errors.stock && (
-                    <span className="error-message">{formik.errors.stock}</span>
+                    <span className="error-message" style={{
+                      color: 'red',
+                      fontSize: '12px',
+                      marginTop: '5px',
+                      display: 'inline-block',
+                    }}>{formik.errors.stock}</span>
                   )}
                 </Grid>
 
@@ -265,7 +290,12 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                     onBlur={formik.handleBlur("price")}
                   />
                   {formik.touched.price && formik.errors.price && (
-                    <span className="error-message">{formik.errors.price}</span>
+                    <span className="error-message" style={{
+                      color: 'red',
+                      fontSize: '12px',
+                      marginTop: '5px',
+                      display: 'inline-block',
+                    }}>{formik.errors.price}</span>
                   )}
                 </Grid>
               </Grid>
@@ -276,9 +306,9 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                     checked={formik.values.isDuotone}
                     onChange={(event) =>
                       formik.setFieldValue("isDuotone", event.target.checked)
-                    } 
+                    }
                     iconStyle={{
-                      fontSize: 16, 
+                      fontSize: 16,
                     }}
                     checkedIconStyle={{
                       fontSize: 16,
@@ -319,7 +349,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
                 },
               }}
               onClick={(e) => {
-                formik.handleSubmit(); 
+                formik.handleSubmit();
               }}
             >
               {isImageUploading ? (

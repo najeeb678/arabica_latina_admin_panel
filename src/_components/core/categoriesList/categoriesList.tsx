@@ -10,7 +10,8 @@ import DropDownForActions from "@/_components/common/MenuDropDownForActions/Drop
 import { Category, ButtonConfig } from "@/types/types";
 import AddCategoryForm from "./AddCategoryForm";
 import { Modal } from "@mui/material";
-import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog"; 
+import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
+import CustomModal from "@/_components/common/CustomModal/CustomModal";
 
 const Categories = () => {
    const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +35,7 @@ const Categories = () => {
       if (categories) {
          const updatedCategories = categories.map((item: Category, index: number) => ({
             ...item,
-            Sr_No: index + 1, 
+            Sr_No: index + 1,
          }));
          setProcessedCategories(updatedCategories);
       }
@@ -47,16 +48,13 @@ const Categories = () => {
    const handleDeleteCategory = async () => {
       if (selectedCategory && selectedCategory.categoryId) {
          try {
-            // Dispatch the action to delete the category from the backend
             await dispatch(removeCategory(selectedCategory.categoryId)).unwrap();
             console.log("Deleted category:", selectedCategory.categoryId);
 
-            // Remove the category from the local state (optimistic update)
             setProcessedCategories(prevCategories =>
                prevCategories.filter(category => category.categoryId !== selectedCategory.categoryId)
             );
 
-            // Close the modal and reset the selected category
             setIsDeleteModalOpen(false);
             setSelectedCategory(null);
          } catch (error) {
@@ -67,7 +65,6 @@ const Categories = () => {
       }
    };
 
-   // Table columns
    const columns = [
       {
          label: "Sr_No",
@@ -109,8 +106,8 @@ const Categories = () => {
                      ),
                      label: "Delete",
                      onClick: () => {
-                        setSelectedCategory(row); // Correctly set the selected category
-                        setIsDeleteModalOpen(true); // Open delete confirmation modal
+                        setSelectedCategory(row);
+                        setIsDeleteModalOpen(true);
                      },
                   },
                ]}
@@ -119,12 +116,10 @@ const Categories = () => {
       },
    ];
 
-   // Open the add category form
    const handleNewCategory = () => {
-      setIsAddCategoryFormOpen(true); // Open the form modal
+      setIsAddCategoryFormOpen(true);
    };
 
-   // Modal button configurations
    const buttons: ButtonConfig[] = [
       {
          label: "Add Category",
@@ -136,6 +131,9 @@ const Categories = () => {
             backgroundColor: "#FBC02D !important",
             borderRadius: "50px !important",
             boxShadow: "none",
+            whiteSpace: "nowrap !important",
+            transform: 'none !important',
+            width: 'auto !important',
             "&:hover": {
                color: "white !important",
             },
@@ -144,13 +142,13 @@ const Categories = () => {
    ];
 
    const handleCloseForm = () => {
-      setIsAddCategoryFormOpen(false); 
+      setIsAddCategoryFormOpen(false);
    };
 
    return (
       <div>
          <GenericTable
-            data={processedCategories || []} 
+            data={processedCategories || []}
             columns={columns}
             title="Categories"
             buttons={buttons}
@@ -158,38 +156,22 @@ const Categories = () => {
             showPagination={true}
          />
 
-         {/* Modal for Add Category Form */}
-         <Modal
+         <CustomModal
             open={isAddCategoryFormOpen}
-            onClose={handleCloseForm}
-            aria-labelledby="add-category-form-modal"
-            aria-describedby="add-category-form-description"
+            modalWidth="50%"
+            title={"Add Category"}
+            handleClose={() => setIsAddCategoryFormOpen(false)}
          >
-            <Box
-               sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 400,
-                  bgcolor: "background.paper",
-                  borderRadius: 2,
-                  boxShadow: 24,
-                  p: 4,
-               }}
-            >
-               <AddCategoryForm handleClose={handleCloseForm} />
-            </Box>
-         </Modal>
+            <AddCategoryForm handleClose={handleCloseForm} />
+         </CustomModal>
 
-         {/* Modal for Delete Confirmation */}
          <TransitionsDialog
-        heading="Confirm Delete"
-        description="Are you sure you want to delete this category?"
-        open={isDeleteModalOpen}
-        cancel={() => setIsDeleteModalOpen(false)}
-        proceed={handleDeleteCategory}
-      />
+            heading="Confirm Delete"
+            description="Are you sure you want to delete this category?"
+            open={isDeleteModalOpen}
+            cancel={() => setIsDeleteModalOpen(false)}
+            proceed={handleDeleteCategory}
+         />
       </div>
    );
 };

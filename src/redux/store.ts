@@ -4,6 +4,7 @@ import productsSlice from "../redux/slices/productsSlice";
 import productsVariantsSlice from "./slices/ProductVariantsSlice";
 import ordersSlice from './slices/OrdersSlice';
 import customersSlice from "./slices/CustomersSlice";
+import authSlice from '../redux/slices/authSlice'; 
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     products: productsSlice,
     orders: ordersSlice,
     customers: customersSlice,
+    auth: authSlice, 
   },
 });
 

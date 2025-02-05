@@ -50,7 +50,7 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
     initialValues: {
       name: product?.name || "",
       description: product?.description || "",
-      categoryId: product?.categoryId || "", 
+      categoryId: product?.categoryId || "",
       basePrice: product?.basePrice || "",
       composition: product?.composition || "",
       weight: product?.weight || "",
@@ -66,7 +66,7 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
       productType: Yup.string().required("Product type is required"),
     }),
     onSubmit: async (data) => {
-      console.log("Submitting Form Data1122: ", data);  
+      console.log("Submitting Form Data1122: ", data);
       setLoading(true);
       const updatedData = {
         ...data,
@@ -74,7 +74,7 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
       };
       try {
         const res = await dispatch(updateProduct({ id: product?.productId, data: updatedData })).unwrap();
-        
+
         if (res) {
           toast("Product updated successfully", { type: "success" });
           handleClose();
@@ -112,7 +112,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product name"
               />
               {formik.touched.name && formik.errors.name && (
-                <span className="error-message">{formik.errors.name as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.name as string}</span>
               )}
             </Grid>
 
@@ -127,7 +132,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product description"
               />
               {formik.touched.description && formik.errors.description && (
-                <span className="error-message">{formik.errors.description as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.description as string}</span>
               )}
             </Grid>
 
@@ -139,19 +149,21 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                   { label: categoryName, value: product?.categoryId },
                   ...categories.map((category: any) => ({
                     label: category.name,
-                    value: category.name,  
+                    value: category.name,
                   })),
                 ]}
-                value={formik.values.categoryId} 
+                value={formik.values.categoryId}
                 onChange={(event) => {
-                  formik.setFieldValue("categoryId", event.target.value);  // Set the selected category name
+                  formik.setFieldValue("categoryId", event.target.value);
                 }}
               />
-
-
-
               {formik.touched.categoryId && formik.errors.categoryId && (
-                <span className="error-message">{formik.errors.categoryId as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.categoryId as string}</span>
               )}
 
             </Grid>
@@ -167,7 +179,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter base price"
               />
               {formik.touched.basePrice && formik.errors.basePrice && (
-                <span className="error-message">{formik.errors.basePrice as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.basePrice as string}</span>
               )}
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -181,7 +198,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product composition"
               />
               {formik.touched.composition && formik.errors.composition && (
-                <span className="error-message">{formik.errors.composition as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.composition as string}</span>
               )}
             </Grid>
 
@@ -196,7 +218,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product weight"
               />
               {formik.touched.weight && formik.errors.weight && (
-                <span className="error-message">{formik.errors.weight as string}</span>
+                <span className="error-message" style={{
+                  color: 'red',
+                  fontSize: '12px',
+                  marginTop: '15px',
+                  display: 'inline-block',
+                }}>{formik.errors.weight as string}</span>
               )}
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -212,6 +239,12 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 value={formik.values.productType}
                 onChange={(event) => formik.setFieldValue("productType", event.target.value)}
               />
+              {formik.touched.productType && formik.errors.productType && <span className="error-message" style={{
+                color: 'red',
+                fontSize: '12px',
+                marginTop: '5px',
+                display: 'inline-block',
+              }}>{formik.errors.productType as string}</span>}
             </Grid>
 
           </Grid>

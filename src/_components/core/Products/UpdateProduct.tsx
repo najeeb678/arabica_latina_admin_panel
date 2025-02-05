@@ -39,13 +39,13 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
       // Set the category name if a matching category is found
       if (category) {
         setCategoryName(category.name);
-        console.log("Category Name:", category.name);
+
       }
     }
   }, [categories, product]);
 
   // console.log("categoryName is: ", categoryName);
-  console.log("Product Data121: ", product?.productId);
+
   const formik = useFormik({
     initialValues: {
       name: product?.name || "",

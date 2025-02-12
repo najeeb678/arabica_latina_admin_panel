@@ -63,6 +63,11 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
       icon: MdOutlineMedicalServices,
       path: "/customers",
     },
+    {
+      title: "Discounts",
+      icon: MdOutlineMedicalServices,
+      path: "/discounts",
+    },
 
     // {
     //   title: "Settings",

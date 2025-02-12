@@ -15,18 +15,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
     "/customers",
   ];
 
-  // Check if user is trying to access a protected route without a token
+
   if (!token && protectedRoutes.some(route => resolvedUrl.startsWith(route))) {
     return {
       redirect: {
-        destination: "/authentication/sign-in", // Redirect to sign-in if not authenticated
+        destination: "/authentication/sign-in", 
         permanent: false,
       },
     };
   }
 
   const publicRoutes = ["/authentication/sign-in"];
-  // Redirect to home if user is already authenticated and tries to visit sign-in page
+
   if (token && publicRoutes.includes(resolvedUrl)) {
     return {
       redirect: {
@@ -36,5 +36,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
     };
   }
 
-  return { props: {} }; // If everything is fine, return props
+  return { props: {} }; 
 };

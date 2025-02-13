@@ -29,9 +29,7 @@ const AdminProductsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(
-      getAllProducts({ search: filteredName, filter: productsFilter })
-    )
+    dispatch(getAllProducts({ search: filteredName, filter: productsFilter }))
       .unwrap()
       .then((res) => {
         console.log("Fetched Products Data:", res);
@@ -47,24 +45,24 @@ const AdminProductsTable = () => {
 
   const transformedProductsData = productsData
     ? productsData.map((product: any, index: number) => ({
-      Sr_No: index + 1,
-      Product_ID: product?.productId || "N/A",
-      Name: product?.name || "N/A",
-      Base_Price: product?.basePrice || 0,
-      Description: product?.description || "N/A",
-      Created_At: formatDate(product?.createdAt) || "N/A",
-      Updated_At: formatDate(product?.updatedAt) || "N/A",
-      Product_Type: product?.productType || "N/A",
-      row: product,
-      Variants: product?.Variants.map((variant: any) => ({
-        Variant_ID: variant?.variantId || "N/A",
-        Color: variant?.color || "N/A",
-        Size: variant?.size || "N/A",
-        Style: variant?.style || "N/A",
-        Price: variant?.price || 0,
-        In_Stock: variant?.isInStock ? "Yes" : "No",
-      })),
-    }))
+        Sr_No: index + 1,
+        Product_ID: product?.productId || "N/A",
+        Name: product?.name || "N/A",
+        Base_Price: product?.basePrice || 0,
+        Description: product?.description || "N/A",
+        Created_At: formatDate(product?.createdAt) || "N/A",
+        Updated_At: formatDate(product?.updatedAt) || "N/A",
+        Product_Type: product?.productType || "N/A",
+        row: product,
+        Variants: product?.Variants.map((variant: any) => ({
+          Variant_ID: variant?.variantId || "N/A",
+          Color: variant?.color || "N/A",
+          Size: variant?.size || "N/A",
+          Style: variant?.style || "N/A",
+          Price: variant?.price || 0,
+          In_Stock: variant?.isInStock ? "Yes" : "No",
+        })),
+      }))
     : [];
 
   const columns: Column<any>[] = [
@@ -85,7 +83,11 @@ const AdminProductsTable = () => {
             items={[
               {
                 icon: (
-                  <DriveFileRenameOutlineIcon fontSize="inherit" color="primary" sx={{ fontSize: "12px" }} />
+                  <DriveFileRenameOutlineIcon
+                    fontSize="inherit"
+                    color="primary"
+                    sx={{ fontSize: "12px" }}
+                  />
                 ),
                 label: "Update",
                 onClick: () => handleOpenUpdate(row),
@@ -118,7 +120,9 @@ const AdminProductsTable = () => {
       .catch((err) => console.error("Search Error", err));
   };
 
-  const searchFunc = useCallback(_debounce(onSearchProduct, 500), [productsFilter]);
+  const searchFunc = useCallback(_debounce(onSearchProduct, 500), [
+    productsFilter,
+  ]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -156,8 +160,8 @@ const AdminProductsTable = () => {
         borderRadius: "50px !important",
         boxShadow: "none",
         whiteSpace: "nowrap !important",
-        transform: 'none !important',
-        
+        transform: "none !important",
+
         "&:hover": {
           color: "white !important",
         },
@@ -166,10 +170,11 @@ const AdminProductsTable = () => {
   ];
 
   const handleOpenUpdate = (row: any) => {
+    console.log("row", row);
     setSelectedProduct(row);
     setOpenProductModal(true);
   };
-
+  console.log("selectedProduct", selectedProduct);
   const handleProductDelete = (productId: string) => {
     dispatch(deleteProduct(productId))
       .unwrap()
@@ -183,7 +188,6 @@ const AdminProductsTable = () => {
       });
   };
 
-
   return (
     <>
       <GenericTable
@@ -192,7 +196,6 @@ const AdminProductsTable = () => {
         title="Products"
         loading={loadingproductsData}
         buttons={buttons}
-
         filters={filters}
       />
 
@@ -202,16 +205,10 @@ const AdminProductsTable = () => {
         handleClose={() => setOpenProductModal(false)}
         modalWidth="70%"
       >
-        {selectedProduct ? (
-          <EditProduct
-            product={selectedProduct}
-            handleClose={() => setOpenProductModal(false)}
-          />
-        ) : (
-          <AddProduct
-            handleClose={() => setOpenProductModal(false)}
-          />
-        )}
+        <AddProduct
+          productDetails={selectedProduct}
+          handleClose={() => setOpenProductModal(false)}
+        />
       </CustomModal>
 
       <TransitionsDialog

@@ -13,6 +13,9 @@ import { getAllProducts } from "../../../redux/slices/productsSlice";
 import { AppDispatch } from "../../../redux/store";
 import { createProductVariant } from "../../../redux/slices/ProductVariantsSlice";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
+import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
+import categories from "@/pages/categories";
+import { toast } from "react-toastify";
 
 // Define prop types
 interface ProductVariantFormProps {
@@ -23,12 +26,17 @@ interface ProductVariantFormProps {
   };
 }
 
-const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, product }) => {
+const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
+  handleClose,
+  product,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
 
-  const { productsData, loadingproductsData } = useSelector((state: any) => state.products);
+  const { productsData, loadingproductsData } = useSelector(
+    (state: any) => state.products
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -46,8 +54,18 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
       color: Yup.string().required("Color is required"),
       style: Yup.string().required("Style is required"),
       size: Yup.string().required("Size is required"),
-      stock: Yup.number().required("Stock is required").min(0, "Stock can't be negative"),
-      price: Yup.number().required("Price is required").min(0, "Price can't be negative"),
+
+      stock: Yup.number()
+        .transform((value, originalValue) =>
+          originalValue === "" ? undefined : Number(originalValue)
+        )
+        .typeError("Stock must be a number")
+        .required("Stock is required")
+        .min(0, "Stock can't be negative"),
+
+      price: Yup.number()
+        .required("Price is required")
+        .min(0, "Price can't be negative"),
     }),
     onSubmit: async (data) => {
       const payload = {
@@ -56,16 +74,22 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
         price: Number(data.price),
         attachment: imageUrl,
       };
-      console.log("Form Submitted with data:", data); // Debug log
+
       try {
-        await dispatch(createProductVariant(payload)).unwrap();
-        console.log("Product variant created successfully");
+        await dispatch(createProductVariant(payload))
+          .unwrap()
+          .then((res) => {
+            toast.success("Product variant created successfully");
+          })
+          .catch((err) => {
+            toast.error(err?.message || "Error creating product variant");
+          });
+
         handleClose();
       } catch (error) {
         console.error("Error creating product variant:", error);
       }
     },
-
   });
 
   // Fetch products on mount
@@ -87,250 +111,222 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
       }}
     >
       <Box component="form" noValidate>
-        <Grid container spacing={6} direction="row">
-          <Grid container rowSpacing={1} columnSpacing={6} direction="row">
-            <Grid container size={{ xs: 12, md: 12 }} direction="row">
-              <Grid container spacing={4} direction={{ xs: "row", md: "row" }}>
-                {/* Inputs Section */}
-                <Grid size={{ xs: 12, md: 8 }} component="div">
-                  {/* Product Dropdown */}
-                  <Grid size={{ xs: 12 }} component="div" mb={2}>
-                    {loadingproductsData ? (
-                      <ThreeDots height="40" width="40" radius="9" color="#000" ariaLabel="loading-products" />
-                    ) : productsData?.length > 0 ? (
-                      <Autocomplete
-                        options={productsData}
-                        getOptionLabel={(option) => option.name || ""}
-                        value={
-                          productsData.find((product: { productId: string }) => product.productId === formik.values.productId) || null
-                        }
-                        onChange={(event, value) => formik.setFieldValue("productId", value ? value.productId : "")}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Product"
-                            InputProps={{
-                              ...params.InputProps,
-                              sx: {
-                                fontSize: "12px",
-                                height: "45px !important ",
-                                display: "flex",
-                                alignItems: "center",
-                                padding: "0 12px !important",
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#D7D7D7",
-                                },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#D7D7D7",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#D7D7D7",
-                                },
-                              },
-                            }}
-                            InputLabelProps={{
-                              style: {
-                                fontSize: "12px",
-                              },
-                            }}
-                          />
-                        )}
-                        fullWidth
-                        sx={{
-                          fontSize: "12px !important",
-                          height: "40px",
-                          "& .MuiOutlinedInput-root": {
-                            fontSize: "12px",
-                            height: "40px",
-                            display: "flex",
-                            alignItems: "center",
-                            padding: "0 12px",
-                          },
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#D7D7D7",
-                          },
-                          "& .MuiSelect-icon": {
-                            color: "#393939",
-                          },
-                        }}
-                      />
+        <Grid container spacing={2} direction="row">
+          {/* Inputs Section */}
+          <Grid size={{ xs: 12, md: 8 }} component="div">
+            {/* Product Dropdown */}
 
-
-
-                    ) : (
-                      <span className="error-message">No products available</span>
-                    )}
-                    {formik.touched.productId && formik.errors.productId && (
-                      <span className="error-message" style={{
-                        color: 'red',
-                        fontSize: '12px',
-                        marginTop: '15px',
-                        display: 'inline-block',
-                      }}>{formik.errors.productId}</span>
-                    )}
-                  </Grid>
-
-                  {/* Color Input */}
-                  <Grid size={{ xs: 12 }} component="div" mb={2}>
-                    <GenericInput
-                      label="Color"
-                      name="color"
-                      type="text"
-                      value={formik.values.color}
-                      onChange={formik.handleChange("color")}
-                      onBlur={formik.handleBlur("color")}
-                    />
-                    {formik.touched.color && formik.errors.color && (
-                      <span className="error-message" style={{
-                        color: 'red',
-                        fontSize: '12px',
-                        marginTop: '5px',
-                        display: 'inline-block',
-                      }}>{formik.errors.color}</span>
-                    )}
-                  </Grid>
-                </Grid>
-
-                {/* Image Section */}
-                <Grid
-                  size={{ xs: 12, md: 4 }}
-                  component="div"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ProductImageUploader
-                    selectedImage={imageUrl}
-                    onImageChange={handleImageUpdate}
-                    setIsImageUploading={setIsImageUploading}
-                  />
-                </Grid>
-              </Grid>
-
-
-              <Grid container spacing={2}>
-                {/* Style Input */}
-                <Grid size={{ xs: 12, md: 6 }} component="div">
-                  <GenericInput
-                    label="Style"
-                    name="style"
-                    type="text"
-                    value={formik.values.style}
-                    onChange={formik.handleChange("style")}
-                    onBlur={formik.handleBlur("style")}
-                  />
-                  {formik.touched.style && formik.errors.style && (
-                    <span className="error-message" style={{
-                      color: 'red',
-                      fontSize: '12px',
-                      marginTop: '5px',
-                      display: 'inline-block',
-                    }}>{formik.errors.style}</span>
-                  )}
-                </Grid>
-
-                {/* Size Input */}
-                <Grid size={{ xs: 12, md: 6 }} component="div">
-                  <GenericInput
-                    label="Size"
-                    name="size"
-                    type="text"
-                    value={formik.values.size}
-                    onChange={formik.handleChange("size")}
-                    onBlur={formik.handleBlur("size")}
-                  />
-                  {formik.touched.size && formik.errors.size && (
-                    <span className="error-message" style={{
-                      color: 'red',
-                      fontSize: '12px',
-                      marginTop: '5px',
-                      display: 'inline-block',
-                    }}>{formik.errors.size}</span>
-                  )}
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                {/* Stock Input */}
-                <Grid size={{ xs: 12, md: 6 }} component="div">
-                  <GenericInput
-                    label="Stock"
-                    name="stock"
-                    type="number"
-                    value={formik.values.stock}
-                    onChange={formik.handleChange("stock")}
-                    onBlur={formik.handleBlur("stock")}
-                  />
-                  {formik.touched.stock && formik.errors.stock && (
-                    <span className="error-message" style={{
-                      color: 'red',
-                      fontSize: '12px',
-                      marginTop: '5px',
-                      display: 'inline-block',
-                    }}>{formik.errors.stock}</span>
-                  )}
-                </Grid>
-
-                {/* Price Input */}
-                <Grid size={{ xs: 12, md: 6 }} component="div">
-                  <GenericInput
-                    label="Price"
-                    name="price"
-                    type="number"
-                    value={formik.values.price}
-                    onChange={formik.handleChange("price")}
-                    onBlur={formik.handleBlur("price")}
-                  />
-                  {formik.touched.price && formik.errors.price && (
-                    <span className="error-message" style={{
-                      color: 'red',
-                      fontSize: '12px',
-                      marginTop: '5px',
-                      display: 'inline-block',
-                    }}>{formik.errors.price}</span>
-                  )}
-                </Grid>
-              </Grid>
-              {/* Duotone Checkbox */}
-              <Grid size={{ xs: 12, md: 12 }} component="div">
-                <label style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <CustomCheckbox
-                    checked={formik.values.isDuotone}
-                    onChange={(event) =>
-                      formik.setFieldValue("isDuotone", event.target.checked)
+            <Grid size={{ xs: 12 }} component="div" mb={2}>
+              {loadingproductsData ? (
+                <ThreeDots
+                  height="40"
+                  width="40"
+                  radius="9"
+                  color="#000"
+                  ariaLabel="loading-products"
+                />
+              ) : productsData?.length > 0 ? (
+                <>
+                  <SingleSelect
+                    title="Select a Category"
+                    textFieldLabel="Select Category"
+                    value={
+                      productsData.find(
+                        (product: { productId: string }) =>
+                          product.productId === formik.values.productId
+                      ) || null
                     }
-                    iconStyle={{
-                      fontSize: 16,
-                    }}
-                    checkedIconStyle={{
-                      fontSize: 16,
-                      color: "#fbc540",
-                    }}
-                    sx={{
-                      padding: "4px",
-                    }}
+                    data={productsData.map((product: any) => ({
+                      ...product,
+                      name: `${product.name} - ${product?.category.gender}`,
+                    }))}
+                    onChange={(value) =>
+                      formik.setFieldValue(
+                        "productId",
+                        (value as any)?.productId || ""
+                      )
+                    }
+                    onBlur={formik.handleBlur("productId")}
+                    name="productId"
+                    titleStyle={{ color: "#2E2B2A", fontSize: "14px" }}
+                    sx={{ fontSize: "14px", height: "45px" }}
                   />
-                  <Typography
-                    sx={{
-                      fontSize: "12px",
-                    }}
-                  >
-                    Duotone
-                  </Typography>
-                </label>
-              </Grid>
+
+                  {formik.touched.productId && formik.errors.productId && (
+                    <Typography color="error" variant="caption">
+                      {typeof formik.errors.productId === "string"
+                        ? formik.errors.productId
+                        : ""}
+                    </Typography>
+                  )}
+                </>
+              ) : (
+                <span className="error-message">No products available</span>
+              )}
+            </Grid>
+
+            {/* Color Input */}
+            <Grid size={{ xs: 12 }} component="div">
+              <GenericInput
+                label="Color"
+                name="color"
+                type="text"
+                value={formik.values.color}
+                onChange={formik.handleChange("color")}
+                onBlur={formik.handleBlur("color")}
+                error={formik.touched.color && Boolean(formik.errors.color)}
+                helperText={
+                  formik.touched.color && formik.errors.color
+                    ? (formik.errors.color as any)
+                    : undefined
+                }
+                placeholder="Enter color"
+                sx={{ marginTop: "10px" }}
+                inputfieldHeight="45px"
+              />
             </Grid>
           </Grid>
 
-          <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-start" }}>
+          {/* Image Section */}
+          <Grid
+            size={{ xs: 12, md: 4 }}
+            component="div"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ProductImageUploader
+              selectedImage={imageUrl}
+              onImageChange={handleImageUpdate}
+              setIsImageUploading={setIsImageUploading}
+            />
+          </Grid>
+
+          <Grid container spacing={2} size={{ xs: 12, md: 6 }}>
+            {/* Style Input */}
+            <Grid size={{ xs: 12 }} component="div">
+              <GenericInput
+                label="Style"
+                name="style"
+                type="text"
+                value={formik.values.style}
+                onChange={formik.handleChange("style")}
+                onBlur={formik.handleBlur("style")}
+                error={formik.touched.style && Boolean(formik.errors.style)}
+                helperText={
+                  formik.touched.style && formik.errors.style
+                    ? (formik.errors.style as any)
+                    : undefined
+                }
+                placeholder="Enter Style"
+                sx={{ marginTop: "10px" }}
+                inputfieldHeight="45px"
+              />
+            </Grid>
+          </Grid>
+          {/* Size Input */}
+          <Grid size={{ xs: 12, md: 6 }} component="div">
+            <GenericInput
+              label="Size"
+              name="size"
+              type="text"
+              value={formik.values.size}
+              onChange={formik.handleChange("size")}
+              onBlur={formik.handleBlur("size")}
+              error={formik.touched.size && Boolean(formik.errors.size)}
+              helperText={
+                formik.touched.size && formik.errors.size
+                  ? (formik.errors.size as any)
+                  : undefined
+              }
+              placeholder="Enter Size"
+              sx={{ marginTop: "10px" }}
+              inputfieldHeight="45px"
+            />
+          </Grid>
+
+          {/* Stock Input */}
+          <Grid size={{ xs: 12, md: 6 }} component="div">
+            <GenericInput
+              label="Stock"
+              name="stock"
+              type="text"
+              value={formik.values.stock}
+              onChange={formik.handleChange("stock")}
+              onBlur={formik.handleBlur("stock")}
+              error={formik.touched.stock && Boolean(formik.errors.stock)}
+              helperText={
+                formik.touched.stock && formik.errors.stock
+                  ? (formik.errors.stock as any)
+                  : undefined
+              }
+              placeholder="Enter stock"
+              sx={{ marginTop: "10px" }}
+              inputfieldHeight="45px"
+            />
+          </Grid>
+
+          {/* Price Input */}
+          <Grid size={{ xs: 12, md: 6 }} component="div">
+            <GenericInput
+              label="Price"
+              name="price"
+              type="number"
+              value={formik.values.price}
+              onChange={formik.handleChange("price")}
+              onBlur={formik.handleBlur("price")}
+              error={formik.touched.price && Boolean(formik.errors.price)}
+              helperText={
+                formik.touched.price && formik.errors.price
+                  ? (formik.errors.price as any)
+                  : undefined
+              }
+              placeholder="Enter price"
+              sx={{ marginTop: "10px" }}
+              inputfieldHeight="45px"
+            />
+          </Grid>
+
+          {/* Duotone Checkbox */}
+          <Grid size={{ xs: 12, md: 12 }} component="div">
+            <label
+              style={{ display: "flex", alignItems: "center", gap: "4px" }}
+            >
+              <CustomCheckbox
+                checked={formik.values.isDuotone}
+                onChange={(event) =>
+                  formik.setFieldValue("isDuotone", event.target.checked)
+                }
+                iconStyle={{
+                  fontSize: 16,
+                }}
+                checkedIconStyle={{
+                  fontSize: 16,
+                  color: "#fbc540",
+                }}
+                sx={{
+                  padding: "4px",
+                }}
+              />
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                }}
+              >
+                Duotone
+              </Typography>
+            </label>
+          </Grid>
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
             <Button
               type="button"
               variant="contained"
@@ -353,7 +349,14 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({ handleClose, pr
               }}
             >
               {isImageUploading ? (
-                <ThreeDots height="28" width="40" radius="9" color="#FFFFFF" ariaLabel="three-dots-loading" visible />
+                <ThreeDots
+                  height="28"
+                  width="40"
+                  radius="9"
+                  color="#FFFFFF"
+                  ariaLabel="three-dots-loading"
+                  visible
+                />
               ) : (
                 <>
                   <AddIcon sx={{ marginRight: 1 }} />

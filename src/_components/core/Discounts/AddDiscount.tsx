@@ -1,13 +1,25 @@
 import GenericInput from "@/_components/common/InputField/GenericInput";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddDiscount = () => {
-  const [percentage, setPercentage] = useState("");
-  const dispatch = useDispatch();
+import { createDiscount, updateDiscount } from "@/redux/slices/discountSlice";
+import { useDispatch } from "react-redux";
+import Button from "@/_components/common/button";
+
+const AddDiscount = ({
+  handleClose,
+  initialData = null, // If provided, it's update mode
+}: {
+  handleClose: () => void;
+  initialData?: { id: string; percentage: string } | null;
+}) => {
+  const [percentage, setPercentage] = useState(initialData?.percentage || "");
+  const dispatch: any = useDispatch();
+
+  useEffect(() => {
+    if (initialData) setPercentage(initialData.percentage);
+  }, [initialData]);
 
   const validatePercentage = (value: string) => {
     const num = Number(value);
@@ -25,48 +37,75 @@ const AddDiscount = () => {
     }
 
     try {
-      //   await dispatch(addDiscount({ percentage }));
-      toast.success("Discount added successfully!", { position: "top-right" });
+      if (initialData) {
+        await dispatch(
+          updateDiscount({ id: initialData.id, payload: { percentage } })
+        ).unwrap();
+
+        toast.success("Discount updated successfully!", {
+          position: "top-right",
+          
+        });
+      } else {
+        // Create Discount
+        await dispatch(createDiscount({ percentage })).unwrap();
+        toast.success("Discount added successfully!", {
+          position: "top-right",
+        });
+      }
+
       setPercentage("");
+      handleClose(); // Close the modal
     } catch (error) {
-      toast.error("Failed to add discount. Please try again.", {
+      toast.error("Failed to save discount. Please try again.", {
         position: "top-right",
       });
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        alignItems: "center",
-      }}
-    >
-      <GenericInput
-        name="description"
-        label="Description"
-        type="number"
-        value={percentage}
-        onChange={(val) => setPercentage(val)}
-        placeholder="Enter discount percentage"
-      />
-      <button
-        type="submit"
+    <>
+      
+      <form
+        onSubmit={handleSubmit}
         style={{
-          backgroundColor: "#007BFF",
-          color: "white",
-          border: "none",
-          padding: "10px 20px",
-          cursor: "pointer",
-          borderRadius: "5px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          alignItems: "center",
         }}
       >
-        Add Discount
-      </button>
-    </form>
+        <GenericInput
+          name="percentage"
+          label="Discount Percentage"
+          type="number"
+          value={percentage}
+          onChange={(val) => setPercentage(val)}
+        />
+        <Button
+          variant="contained"
+          label={initialData ? "Update Discount" : "Add Discount"}
+          size="md"
+          isDisabled={false}
+          type="submit"
+          sx={{
+            fontSize: "13px !important",
+            fontWeight: "400 !important",
+            borderRadius: "50px !important",
+            backgroundColor: "#FBC02D !important",
+            boxShadow: "none",
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              backgroundColor: "#FBC02D !important",
+              color: "white !important",
+              boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.5 )",
+              transform: "scale(1.005)",
+            },
+          }}
+        />
+      </form>
+      
+    </>
   );
 };
 

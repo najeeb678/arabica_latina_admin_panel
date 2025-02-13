@@ -44,7 +44,6 @@ const AddDiscount = ({
 
         toast.success("Discount updated successfully!", {
           position: "top-right",
-          
         });
       } else {
         // Create Discount
@@ -65,7 +64,6 @@ const AddDiscount = ({
 
   return (
     <>
-      
       <form
         onSubmit={handleSubmit}
         style={{
@@ -104,7 +102,6 @@ const AddDiscount = ({
           }}
         />
       </form>
-      
     </>
   );
 };

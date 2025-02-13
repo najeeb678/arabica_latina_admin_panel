@@ -24,7 +24,10 @@ interface discountProps {
   discountsData: any[];
   loading: boolean;
 }
-const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => {
+const DiscountsTable: React.FC<discountProps> = ({
+  discountsData,
+  loading,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
@@ -32,25 +35,29 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
   const [selectedDiscount, setSelectedDiscount] = useState<any | null>(null);
 
   const transformedData = discountsData
-  ? discountsData
-      .filter((data: any) => !data.is_Deleted) // Exclude deleted items
-      .map((data: any, index: number) => ({
-        Sr_No: index + 1,
-        ID: data?.discountId,
-        promoCode: data?.promoCode,
-        percentage: `${data?.percentage} %`,
-        date: formatDate(data?.createdAt),
-        isActive: data?.is_Active,
-      }))
-  : [];
-
+    ? discountsData
+        .filter((data: any) => !data.is_Deleted) // Exclude deleted items
+        .map((data: any, index: number) => ({
+          Sr_No: index + 1,
+          ID: data?.discountId,
+          promoCode: data?.promoCode,
+          percentage: `${data?.percentage} %`,
+          date: formatDate(data?.createdAt),
+          isActive: data?.is_Active,
+        }))
+    : [];
 
   const columns: Column<any>[] = [
     {
       label: "Sr_No",
       accessor: "Sr_No",
       render: (_: string, row: any) => (
-        <Box display="flex" alignItems="center" justifyContent="center" gap={"5px"}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={"5px"}
+        >
           <CustomCheckbox isDisabled />
           <span>{row.Sr_No}</span>
         </Box>
@@ -69,12 +76,24 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
         <DropDownForActions
           items={[
             {
-              icon: <DriveFileRenameOutlineIcon fontSize="inherit" color="error" sx={{ fontSize: "12px" }} />,
+              icon: (
+                <DriveFileRenameOutlineIcon
+                  fontSize="inherit"
+                  color="error"
+                  sx={{ fontSize: "12px" }}
+                />
+              ),
               label: "Update",
               onClick: () => handleOpenUpdate(row),
             },
             {
-              icon: <DeleteIcon fontSize="inherit" color="error" sx={{ fontSize: "12px" }} />,
+              icon: (
+                <DeleteIcon
+                  fontSize="inherit"
+                  color="error"
+                  sx={{ fontSize: "12px" }}
+                />
+              ),
               label: "Delete",
               onClick: () => handleOpenDelete(row),
             },
@@ -85,7 +104,10 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
   ];
 
   const handleOpenUpdate = (row: any) => {
-    setSelectedDiscount({ id: row.ID, percentage: row.percentage.replace(" %", "") });
+    setSelectedDiscount({
+      id: row.ID,
+      percentage: row.percentage.replace(" %", ""),
+    });
     setOpenCreateModal(true);
   };
 
@@ -110,7 +132,7 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
     setOpenCreateModal(true);
   };
 
-   const buttons: ButtonConfig[] = [
+  const buttons: ButtonConfig[] = [
     {
       label: "Create a Discount",
       variant: "contained",
@@ -133,7 +155,6 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
 
   return (
     <>
-      
       <GenericTable<any>
         data={transformedData}
         columns={columns}
@@ -150,8 +171,15 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
         }}
       />
 
-      <CustomModal open={openCreateModal} title="Manage Discount" handleClose={() => setOpenCreateModal(false)}>
-        <AddDiscount handleClose={() => setOpenCreateModal(false)} initialData={selectedDiscount} />
+      <CustomModal
+        open={openCreateModal}
+        title="Manage Discount"
+        handleClose={() => setOpenCreateModal(false)}
+      >
+        <AddDiscount
+          handleClose={() => setOpenCreateModal(false)}
+          initialData={selectedDiscount}
+        />
       </CustomModal>
 
       <TransitionsDialog
@@ -161,7 +189,6 @@ const DiscountsTable: React.FC<discountProps> = ({ discountsData, loading }) => 
         cancel={() => setIsDeleteModalOpen(false)}
         proceed={handleDeleteDiscount}
       />
-     
     </>
   );
 };

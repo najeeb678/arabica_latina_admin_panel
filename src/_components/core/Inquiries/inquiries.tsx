@@ -8,6 +8,8 @@ import CustomTypography from "@/_components/common/CustomTypography/CustomTypogr
 import GenericInput from "@/_components/common/InputField/GenericInput";
 import { CheckCircleOutline, ErrorOutline, Assignment } from "@mui/icons-material";
 import GenericCard from "@/_components/common/GenericCard";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InquiryStats = ({ title, value, icon }: { title: string; value: number; icon: JSX.Element }) => (
   <Grid item xs={12} sm={6} md={4}>
@@ -81,6 +83,7 @@ const Inquiries = () => {
 
   const handleReply = async () => {
     if (!selectedInquiry) return;
+  
     try {
       await dispatch(
         sendInquiryResponse({
@@ -90,10 +93,13 @@ const Inquiries = () => {
           message: replyMessage,
         })
       );
+  
+      toast.success("Reply sent successfully!"); 
       setIsReplyModalOpen(false);
       setReplyMessage("");
     } catch (error) {
       console.error("Failed to send reply:", error);
+      toast.error("Failed to send reply. Please try again."); 
     }
   };
 

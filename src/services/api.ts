@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 const api = axios.create({
-  baseURL: "https://api.arabiclatina.com/",
+  baseURL: "http://localhost:3001/",
   headers: {
     "Content-Type": "application/json",
   },

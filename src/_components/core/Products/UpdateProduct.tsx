@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -11,14 +11,17 @@ import { AppDispatch } from "@/redux/store";
 import { updateProduct, getAllProducts } from "@/redux/slices/productsSlice";
 import GenericDropDown from "@/_components/common/InputField/GenericDropDown";
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
-import CategoryDropDown from "@/_components/common/InputField/CategoryDropdown";
+import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 
 interface EditProductProps {
   handleClose?: () => void;
   product: any;
 }
 
-const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, product }) => {
+const EditProduct: React.FC<EditProductProps> = ({
+  handleClose = () => {},
+  product,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const { categories } = useSelector((state: any) => state.categories);
@@ -39,7 +42,6 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
       // Set the category name if a matching category is found
       if (category) {
         setCategoryName(category.name);
-
       }
     }
   }, [categories, product]);
@@ -73,7 +75,9 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
         basePrice: parseInt(data.basePrice, 10),
       };
       try {
-        const res = await dispatch(updateProduct({ id: product?.productId, data: updatedData })).unwrap();
+        const res = await dispatch(
+          updateProduct({ id: product?.productId, data: updatedData })
+        ).unwrap();
 
         if (res) {
           toast("Product updated successfully", { type: "success" });
@@ -112,12 +116,17 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product name"
               />
               {formik.touched.name && formik.errors.name && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.name as string}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "15px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.name as string}
+                </span>
               )}
             </Grid>
 
@@ -132,40 +141,48 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product description"
               />
               {formik.touched.description && formik.errors.description && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.description as string}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "15px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.description as string}
+                </span>
               )}
             </Grid>
-
             <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericDropDown
+              <SingleSelect
+                title="Category new"
+                textFieldLabel="Select Category"
+                data={categories.map((category: any) => ({
+                  ...category,
+                  name: `${category.name} -${category.gender}`,
+                }))}
+                onChange={(value) =>
+                  formik.setFieldValue(
+                    "categoryId",
+                    (value as any)?.categoryId || ""
+                  )
+                }
+                // value={formik.values.categoryId}
+                value={
+                  categories.find(
+                    (category: { categoryId: string }) =>
+                      category.categoryId === formik.values.categoryId
+                  ) || null
+                }
+                onBlur={formik.handleBlur("categoryId")}
                 name="categoryId"
-                label="Category"
-                options={[
-                  { label: categoryName, value: product?.categoryId },
-                  ...categories.map((category: any) => ({
-                    label: category.name,
-                    value: category.name,
-                  })),
-                ]}
-                value={formik.values.categoryId}
-                onChange={(event) => {
-                  formik.setFieldValue("categoryId", event.target.value);
-                }}
               />
               {formik.touched.categoryId && formik.errors.categoryId && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.categoryId as string}</span>
-              )}
-
+                <Typography color="error" variant="caption">
+                  {formik.errors.categoryId as string}
+                </Typography>
+              )}{" "}
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -179,12 +196,17 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter base price"
               />
               {formik.touched.basePrice && formik.errors.basePrice && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.basePrice as string}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "15px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.basePrice as string}
+                </span>
               )}
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -198,12 +220,17 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product composition"
               />
               {formik.touched.composition && formik.errors.composition && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.composition as string}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "15px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.composition as string}
+                </span>
               )}
             </Grid>
 
@@ -218,12 +245,17 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                 placeholder="Enter product weight"
               />
               {formik.touched.weight && formik.errors.weight && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '15px',
-                  display: 'inline-block',
-                }}>{formik.errors.weight as string}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "15px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.weight as string}
+                </span>
               )}
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -237,16 +269,24 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
                   { label: "Other", value: "OTHER" },
                 ]}
                 value={formik.values.productType}
-                onChange={(event) => formik.setFieldValue("productType", event.target.value)}
+                onChange={(event) =>
+                  formik.setFieldValue("productType", event.target.value)
+                }
               />
-              {formik.touched.productType && formik.errors.productType && <span className="error-message" style={{
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px',
-                display: 'inline-block',
-              }}>{formik.errors.productType as string}</span>}
+              {formik.touched.productType && formik.errors.productType && (
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.productType as string}
+                </span>
+              )}
             </Grid>
-
           </Grid>
 
           <Box
@@ -309,6 +349,5 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose = () => { }, prod
     </Box>
   );
 };
-
 
 export default EditProduct;

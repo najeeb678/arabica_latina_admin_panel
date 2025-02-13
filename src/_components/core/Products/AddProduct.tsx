@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
-import { Box, Button, Autocomplete, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Autocomplete,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,25 +18,26 @@ import { addProduct, getAllProducts } from "@/redux/slices/productsSlice";
 import { fetchCategories } from "@/redux/slices/categoriesSlice"; // Make sure to import fetchCategories
 import { Category } from "@/types/types"; // Import the Category type
 import GenericDropDown from "@/_components/common/InputField/GenericDropDown";
+import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 
 interface AddProductProps {
   handleClose?: () => void;
 }
 
-const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
+const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => {} }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const { categories } = useSelector((state: any) => state.categories); // Assuming categories are stored here
 
   useEffect(() => {
-    dispatch(fetchCategories()); // Fetch categories on component load
+    dispatch(fetchCategories());
   }, [dispatch]);
-
+  console.log("categories", categories);
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
-      categoryId: "", // The categoryId will now be set from the autocomplete
+      categoryId: "",
       basePrice: "",
       composition: "",
       weight: "",
@@ -68,7 +75,14 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
   });
 
   return (
-    <Box style={{ width: "100%", backgroundColor: "#ffffff", borderRadius: "10px", padding: "5px 20px" }}>
+    <Box
+      style={{
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: "10px",
+        padding: "5px 20px",
+      }}
+    >
       <Box component="form" noValidate onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} direction="column">
           <Grid container rowSpacing={1} columnSpacing={2} direction="row">
@@ -82,12 +96,19 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 onBlur={formik.handleBlur("name")}
                 placeholder="Enter product name"
               />
-              {formik.touched.name && formik.errors.name && <span className="error-message" style={{
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px',
-                display: 'inline-block',
-              }}>{formik.errors.name}</span>}
+              {formik.touched.name && formik.errors.name && (
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.name}
+                </span>
+              )}
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -100,78 +121,48 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 onBlur={formik.handleBlur("description")}
                 placeholder="Enter product description"
               />
-              {formik.touched.description && formik.errors.description && <span className="error-message" style={{
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px',
-                display: 'inline-block',
-              }}>{formik.errors.description}</span>}
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }} component="div">
-              <Autocomplete
-                options={categories || []}
-                getOptionLabel={(option: Category) => option.name}
-                onChange={(event, value) => formik.setFieldValue("categoryId", value ? value.categoryId : "")}
-                value={categories.find((category: { categoryId: string }) => category.categoryId === formik.values.categoryId) || null}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Select Category"
-                    InputProps={{
-                      ...params.InputProps,
-                      sx: {
-                        fontSize: "12px",
-                        height: "40px !important ",
-                        display: "flex",
-                        alignItems: "center",
-                        padding: "0 12px !important",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#D7D7D7",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#D7D7D7",
-                        },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#D7D7D7",
-                        },
-                      },
-                    }}
-                    InputLabelProps={{
-                      style: {
-                        fontSize: "12px",
-                      },
-                    }}
-                  />
-                )}
-                fullWidth
-                sx={{
-                  fontSize: "12px !important",
-                  marginTop: '25px',
-                  height: "40px",
-                  "& .MuiOutlinedInput-root": {
+              {formik.touched.description && formik.errors.description && (
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
                     fontSize: "12px",
-                    height: "45px !important",
-                    paddingBottom: '10px !important',
-                    display: "flex",
-                    alignItems: "center",
-
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#D7D7D7",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#D7D7D7",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#D7D7D7",
-                  },
-                  "& .MuiSelect-icon": {
-                    color: "#393939",
-                  },
-                }}
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.description}
+                </span>
+              )}
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} component="div">
+              <SingleSelect
+                title="Select a Category"
+                textFieldLabel="Select Category"
+                data={categories.map((category: any) => ({
+                  ...category,
+                  name: `${category.name} -${category.gender}`,
+                }))}
+                onChange={(value) =>
+                  formik.setFieldValue(
+                    "categoryId",
+                    (value as any)?.categoryId || ""
+                  )
+                }
+                value={
+                  categories.find(
+                    (category: { categoryId: string }) =>
+                      category.categoryId === formik.values.categoryId
+                  ) || null
+                }
+                onBlur={formik.handleBlur("categoryId")}
+                name="categoryId"
               />
-
+              {formik.touched.categoryId && formik.errors.categoryId && (
+                <Typography color="error" variant="caption">
+                  {formik.errors.categoryId}
+                </Typography>
+              )}{" "}
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -184,12 +175,19 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 onBlur={formik.handleBlur("basePrice")}
                 placeholder="Enter base price"
               />
-              {formik.touched.basePrice && formik.errors.basePrice && <span className="error-message" style={{
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px',
-                display: 'inline-block',
-              }}>{formik.errors.basePrice}</span>}
+              {formik.touched.basePrice && formik.errors.basePrice && (
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.basePrice}
+                </span>
+              )}
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -203,12 +201,15 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 placeholder="Enter product composition"
               />
               {formik.touched.composition && formik.errors.composition && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '5px',
-                  display: 'inline-block',
-                }}>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
                   {formik.errors.composition}
                 </span>
               )}
@@ -225,12 +226,17 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                 placeholder="Enter product weight"
               />
               {formik.touched.weight && formik.errors.weight && (
-                <span className="error-message" style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  marginTop: '5px',
-                  display: 'inline-block',
-                }}>{formik.errors.weight}</span>
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.weight}
+                </span>
               )}
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
@@ -244,26 +250,86 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose = () => { } }) => {
                   { label: "Other", value: "OTHER" },
                 ]}
                 value={formik.values.productType}
-                onChange={(event) => formik.setFieldValue("productType", event.target.value)}
+                onChange={(event) =>
+                  formik.setFieldValue("productType", event.target.value)
+                }
               />
-              {formik.touched.productType && formik.errors.productType && <span className="error-message" style={{
-                color: 'red',
-                fontSize: '12px',
-                marginTop: '5px',
-                display: 'inline-block',
-              }}>{formik.errors.productType}</span>}
+              {formik.touched.productType && formik.errors.productType && (
+                <span
+                  className="error-message"
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {formik.errors.productType}
+                </span>
+              )}
             </Grid>
-
           </Grid>
 
-
-
-          <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-            <Button variant="outlined" onClick={() => handleClose()} style={{ marginLeft: "10px" }} sx={{ fontSize: "13px !important", fontWeight: "400 !important", borderRadius: "50px !important", borderColor: "#b2b2b2", marginRight: "20px", color: "#A6A6A6", boxShadow: "none", transition: "all 0.2s ease-in-out", "&:hover": { boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.05 )", transform: "scale(1.005)" } }}>
+          <Box
+            sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => handleClose()}
+              style={{ marginLeft: "10px" }}
+              sx={{
+                fontSize: "13px !important",
+                fontWeight: "400 !important",
+                borderRadius: "50px !important",
+                borderColor: "#b2b2b2",
+                marginRight: "20px",
+                color: "#A6A6A6",
+                boxShadow: "none",
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.05 )",
+                  transform: "scale(1.005)",
+                },
+              }}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="contained" sx={{ fontSize: "12px !important", fontWeight: "700 !important", fontFamily: "Avenir !important", lineHeight: "18px !important", borderRadius: "50px !important", backgroundColor: "#FBC02D !important", boxShadow: "none", transition: "all 0.2s ease-in-out", "&:hover": { backgroundColor: "#FBC02D !important", color: "white !important", boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.05 )", transform: "scale(1.005)" } }} onClick={(e: any) => { e.preventDefault(); formik.handleSubmit(); }}>
-              {loading ? <ThreeDots height="28" width="40" radius="9" color="#FFFFFF" ariaLabel="three-dots-loading" visible /> : <>Add Product</>}
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                fontSize: "12px !important",
+                fontWeight: "700 !important",
+                fontFamily: "Avenir !important",
+                lineHeight: "18px !important",
+                borderRadius: "50px !important",
+                backgroundColor: "#FBC02D !important",
+                boxShadow: "none",
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "#FBC02D !important",
+                  color: "white !important",
+                  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.05 )",
+                  transform: "scale(1.005)",
+                },
+              }}
+              onClick={(e: any) => {
+                e.preventDefault();
+                formik.handleSubmit();
+              }}
+            >
+              {loading ? (
+                <ThreeDots
+                  height="28"
+                  width="40"
+                  radius="9"
+                  color="#FFFFFF"
+                  ariaLabel="three-dots-loading"
+                  visible
+                />
+              ) : (
+                <>Add Product</>
+              )}
             </Button>
           </Box>
         </Grid>

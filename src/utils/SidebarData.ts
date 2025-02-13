@@ -64,10 +64,10 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
       path: "/customers",
     },
 
-    // {
-    //   title: "Settings",
-    //   icon: CiSettings,
-    //   path: "/settings",
-    // },
+    {
+      title: "Inquiries",
+      icon: CiSettings,
+      path: "/inquiries",
+    },
   ];
 };

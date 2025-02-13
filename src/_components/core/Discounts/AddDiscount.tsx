@@ -1,71 +1,76 @@
 import GenericInput from "@/_components/common/InputField/GenericInput";
 import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { createDiscount, updateDiscount } from "@/redux/slices/discountSlice";
+
 import { useDispatch } from "react-redux";
-import Button from "@/_components/common/button";
+
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Box, Button } from "@mui/material";
+import { ThreeDots } from "react-loader-spinner";
 
 const AddDiscount = ({
   handleClose,
-  initialData = null, // If provided, it's update mode
+  initialData = null,
 }: {
   handleClose: () => void;
   initialData?: { id: string; percentage: string } | null;
 }) => {
-  const [percentage, setPercentage] = useState(initialData?.percentage || "");
   const dispatch: any = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (initialData) setPercentage(initialData.percentage);
-  }, [initialData]);
+  const validationSchema = Yup.object({
+    percentage: Yup.number()
+      .typeError("Please enter a valid number")
+      .min(1, "Percentage must be at least 1")
+      .max(100, "Percentage cannot be more than 100")
+      .required("Percentage is required"),
+  });
 
-  const validatePercentage = (value: string) => {
-    const num = Number(value);
-    return !isNaN(num) && num > 0 && num <= 100;
-  };
+  // Formik Hook
+  const formik = useFormik({
+    initialValues: {
+      percentage: initialData?.percentage || "",
+    },
+    validationSchema,
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      try {
+        if (initialData) {
+          await dispatch(
+            updateDiscount({ id: initialData.id, payload: values })
+          )
+            .unwrap()
+            .finally(() => setLoading(false));
+          toast.success("Discount updated successfully!", {
+            position: "top-right",
+          });
+        } else {
+          await dispatch(createDiscount(values))
+            .unwrap()
+            .finally(() => setLoading(false));
+          toast.success("Discount added successfully!", {
+            position: "top-right",
+          });
+        }
 
-    if (!validatePercentage(percentage)) {
-      toast.error("Please enter a valid percentage (1-100).", {
-        position: "top-right",
-      });
-      return;
-    }
-
-    try {
-      if (initialData) {
-        await dispatch(
-          updateDiscount({ id: initialData.id, payload: { percentage } })
-        ).unwrap();
-
-        toast.success("Discount updated successfully!", {
-          position: "top-right",
-        });
-      } else {
-        // Create Discount
-        await dispatch(createDiscount({ percentage })).unwrap();
-        toast.success("Discount added successfully!", {
+        resetForm();
+        handleClose();
+      } catch (error) {
+        toast.error("Failed to save discount. Please try again.", {
           position: "top-right",
         });
       }
-
-      setPercentage("");
-      handleClose(); // Close the modal
-    } catch (error) {
-      toast.error("Failed to save discount. Please try again.", {
-        position: "top-right",
-      });
-    }
-  };
+    },
+  });
 
   return (
     <>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={formik.handleSubmit}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -75,32 +80,59 @@ const AddDiscount = ({
       >
         <GenericInput
           name="percentage"
-          label="Discount Percentage"
-          type="number"
-          value={percentage}
-          onChange={(val) => setPercentage(val)}
+          type="text"
+          value={formik.values.percentage}
+          onChange={formik.handleChange("percentage")}
+          onBlur={formik.handleBlur("percentage")}
+          error={formik.touched.percentage && Boolean(formik.errors.percentage)}
+          helperText={
+            formik.touched.percentage && formik.errors.percentage
+              ? (formik.errors.percentage as any)
+              : undefined
+          }
+          placeholder="Enter Discount Percentage"
+          sx={{ marginTop: "-10px" }}
+          inputfieldHeight="45px"
         />
-        <Button
-          variant="contained"
-          label={initialData ? "Update Discount" : "Add Discount"}
-          size="md"
-          isDisabled={false}
-          type="submit"
-          sx={{
-            fontSize: "13px !important",
-            fontWeight: "400 !important",
-            borderRadius: "50px !important",
-            backgroundColor: "#FBC02D !important",
-            boxShadow: "none",
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
+
+        <Box
+          sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button
+            variant="contained"
+            // disabled={!formik.isValid || formik.isSubmitting}
+            type="submit"
+            sx={{
+              fontSize: "13px !important",
+              fontWeight: "400 !important",
+              borderRadius: "50px !important",
               backgroundColor: "#FBC02D !important",
-              color: "white !important",
-              boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.5 )",
-              transform: "scale(1.005)",
-            },
-          }}
-        />
+              boxShadow: "none",
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                backgroundColor: "#FBC02D !important",
+                color: "white !important",
+                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.5 )",
+                transform: "scale(1.005)",
+              },
+            }}
+          >
+            {loading ? (
+              <ThreeDots
+                height="28"
+                width="40"
+                radius="9"
+                color="#FFFFFF"
+                ariaLabel="three-dots-loading"
+                visible
+              />
+            ) : initialData ? (
+              "Update Discount"
+            ) : (
+              "Add Discount"
+            )}
+          </Button>
+        </Box>
       </form>
     </>
   );

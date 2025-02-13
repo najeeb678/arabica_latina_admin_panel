@@ -7,16 +7,15 @@ import {
   Typography,
   Theme,
   SxProps,
-
 } from "@mui/material";
 
 type GenericInputProps = {
   label?: string;
   inputfieldHeight?: string;
   name?: string;
-  value: string | number; 
+  value: string;
   onChange: (newValue: string) => void;
-  type?: "text" | "number" | "cnic" | "date" | "time"; // Added datetime-local type
+  type?: "text" | "number" | "date" | "time" | "email";
   onBlur?: (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -30,6 +29,7 @@ type GenericInputProps = {
   error?: boolean; // Add error prop
   helperText?: string; // Add helperText prop
   disabled?: boolean;
+  noBorderRadius?: boolean;
 };
 
 const GenericInput: React.FC<GenericInputProps> = ({
@@ -41,7 +41,7 @@ const GenericInput: React.FC<GenericInputProps> = ({
   onBlur,
   placeholder,
   readonly = false,
-  editIcon = true,
+  editIcon = false,
   multiLine = false,
   icon,
   sx,
@@ -49,16 +49,10 @@ const GenericInput: React.FC<GenericInputProps> = ({
   inputfieldHeight,
   error, // Destructure error
   helperText, // Destructure helperText
-  disabled=false
-}: any ) => {
+  disabled = false,
+  noBorderRadius,
+}) => {
   // Handle CNIC formatting
-  const formatCnic = (value: string) => {
-    const digits = value.replace(/\D/g, "");
-    let formatted = digits.slice(0, 5);
-    if (digits.length > 5) formatted += " " + digits.slice(5, 12);
-    if (digits.length > 12) formatted += " " + digits.slice(12, 13);
-    return formatted;
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = event.target.value;
@@ -76,23 +70,16 @@ const GenericInput: React.FC<GenericInputProps> = ({
       newValue = parsedValue.toString();
     }
 
-    if (type === "cnic") {
-      newValue = formatCnic(newValue);
-    }
-
     onChange(newValue);
   };
-
-  const finalPlaceholder =
-    type === "cnic" && !placeholder ? "----- ------- -" : placeholder;
 
   return (
     <>
       <Typography
         sx={{
-          color: "#B2B2B2",
-          fontSize: "10px",
-          marginTop: "5px",
+          color: "#2E2B2A",
+          fontSize: "14px",
+
           ...labelStyle,
         }}
       >
@@ -107,9 +94,9 @@ const GenericInput: React.FC<GenericInputProps> = ({
         onChange={handleChange}
         variant="outlined"
         onBlur={onBlur}
-        autoComplete="on" 
+        autoComplete="on"
         fullWidth
-        placeholder={finalPlaceholder}
+        placeholder={placeholder}
         multiline={multiLine}
         minRows={multiLine ? 4 : 1}
         InputProps={{
@@ -126,37 +113,35 @@ const GenericInput: React.FC<GenericInputProps> = ({
         }}
         inputProps={{
           pattern: type === "number" ? "[0-9]*" : undefined,
-          maxLength: type === "cnic" ? 15 : undefined,
         }}
         error={error} // Pass error prop to TextField
         helperText={helperText} // Pass helperText prop to TextField
         sx={{
-          margin: "8px 0",
+          margin: "0px 0",
           ...sx,
           "& .MuiOutlinedInput-root": {
-            borderRadius: "5px",
+            borderRadius: noBorderRadius ? "0px" : "5px",
             height: inputfieldHeight || "40px",
+
             fontSize: "14px",
             padding: "0px 6px",
             "&:hover fieldset": {
-              borderColor: "#D7D7D7",
+              borderColor: "#7B7B7B",
             },
             "&.Mui-focused fieldset": {
               borderColor: "#D7D7D7",
             },
-            "& .MuiInputAdornment-root": {
-
-             
-            },
+            "& .MuiInputAdornment-root": {},
           },
           "& .MuiInputBase-input::placeholder": {
             color: "#7B7B7B",
             fontSize: "12px",
           },
-           // Custom styles for AM/PM
-           "& .MuiInputBase-input[type='time']::-webkit-calendar-picker-indicator": {
-            color: "yellow", // Change the color of the AM/PM indicator
-          },
+          // Custom styles for AM/PM
+          "& .MuiInputBase-input[type='time']::-webkit-calendar-picker-indicator":
+            {
+              color: "yellow", // Change the color of the AM/PM indicator
+            },
           "& .MuiInputBase-input[type='time']::after": {
             color: "yellow", // Change the color of the AM/PM indicator
           },

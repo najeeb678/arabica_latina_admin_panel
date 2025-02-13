@@ -5,8 +5,7 @@ import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
 import DropDownForActions from "@/_components/common/MenuDropDownForActions/DropDownForActions";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { ButtonConfig, Column, FilterConfig } from "@/types/types";
 
 import { Box } from "@mui/material";
@@ -79,7 +78,7 @@ const DiscountsTable: React.FC<discountProps> = ({
               icon: (
                 <DriveFileRenameOutlineIcon
                   fontSize="inherit"
-                  color="error"
+                  color="primary"
                   sx={{ fontSize: "12px" }}
                 />
               ),
@@ -129,6 +128,7 @@ const DiscountsTable: React.FC<discountProps> = ({
   };
 
   const handleNewDiscount = () => {
+    setSelectedDiscount(null);
     setOpenCreateModal(true);
   };
 
@@ -173,8 +173,9 @@ const DiscountsTable: React.FC<discountProps> = ({
 
       <CustomModal
         open={openCreateModal}
-        title="Manage Discount"
+        title={selectedDiscount ? "Update Discount " : "Add Discount"}
         handleClose={() => setOpenCreateModal(false)}
+        modalWidth="40%"
       >
         <AddDiscount
           handleClose={() => setOpenCreateModal(false)}

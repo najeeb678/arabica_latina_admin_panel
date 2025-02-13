@@ -10,12 +10,12 @@ const index = () => {
   const { allDiscountData, discountDataloading } = useSelector(
     (state: RootState) => state.discount
   );
-  console.log("allDiscountData", allDiscountData);
+
   useEffect(() => {
     dispatch(fetchAllDiscounts())
       .unwrap()
       .then((res) => {
-        console.log("discounts data", res);
+        // console.log("discounts data", res);
       })
       .catch((err) => {
         console.log(err);

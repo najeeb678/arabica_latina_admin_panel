@@ -6,6 +6,7 @@ import ordersSlice from "./slices/OrdersSlice";
 import customersSlice from "./slices/CustomersSlice";
 import authSlice from "../redux/slices/authSlice";
 import discountsSlice from "./slices/discountSlice";
+import inquiriesSlice from "./slices/inquiriesSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     orders: ordersSlice,
     customers: customersSlice,
     auth: authSlice,
+    inquiries: inquiriesSlice,
     discount: discountsSlice,
   },
 });

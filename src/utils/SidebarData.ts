@@ -69,10 +69,10 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
       path: "/discounts",
     },
 
-    // {
-    //   title: "Settings",
-    //   icon: CiSettings,
-    //   path: "/settings",
-    // },
+    {
+      title: "Inquiries",
+      icon: CiSettings,
+      path: "/inquiries",
+    },
   ];
 };

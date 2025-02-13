@@ -32,6 +32,7 @@ interface GenericTableProps<T> {
   title?: string;
   loading?: boolean;
   showPagination?: boolean;
+  render?: (value: any, row?: T) => JSX.Element; // Allow custom rendering
   buttons?: ButtonConfig[];
   filters?: FilterConfig[];
   handleSearchChange?: (value: string) => void;

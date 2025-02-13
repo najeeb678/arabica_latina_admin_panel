@@ -6,6 +6,8 @@ import { Raleway } from "next/font/google";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import ProtectRoute from "@/auth";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -19,6 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <div className={`${raleway.className}`}>
       <Provider store={store}>
         <ProtectRoute>
+        <ToastContainer />
           <Layout>
             <Component {...pageProps} />
           </Layout>

@@ -11,28 +11,32 @@ import { ThreeDots } from "react-loader-spinner";
 import { Autocomplete, TextField } from "@mui/material";
 import { getAllProducts } from "../../../redux/slices/productsSlice";
 import { AppDispatch } from "../../../redux/store";
-import { createProductVariant } from "../../../redux/slices/ProductVariantsSlice";
+import {
+  createProductVariant,
+  updateProductVariant,
+} from "../../../redux/slices/ProductVariantsSlice";
 import CustomCheckbox from "@/_components/common/CustomCheckBox";
 import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 import categories from "@/pages/categories";
 import { toast } from "react-toastify";
+import { updateProductVariantAPI } from "@/redux/api/ProductVariantsApi";
 
 // Define prop types
 interface ProductVariantFormProps {
   handleClose: () => void;
-  product?: {
-    id: string;
-    name: string;
-  };
+  selectedVariant?: any;
 }
 
 const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
   handleClose,
-  product,
+  selectedVariant = {},
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isImageUploading, setIsImageUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>(
+    selectedVariant?.attachment || ""
+  );
+  const [loading, setLoading] = useState(false);
 
   const { productsData, loadingproductsData } = useSelector(
     (state: any) => state.products
@@ -40,14 +44,14 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
 
   const formik = useFormik({
     initialValues: {
-      productId: product?.id || "",
-      color: "",
-      style: "",
-      attachment: "",
-      isDuotone: false,
-      size: "",
-      stock: "",
-      price: "",
+      productId: selectedVariant?.productId || "",
+      color: selectedVariant?.color || "",
+      style: selectedVariant?.style || "",
+      attachment: selectedVariant?.attachment || "",
+      isDuotone: selectedVariant?.isDuotone || false,
+      size: selectedVariant?.size || "",
+      stock: selectedVariant?.stock?.toString() || "",
+      price: selectedVariant?.price?.toString() || "",
     },
     validationSchema: Yup.object().shape({
       productId: Yup.string().required("Product is required"),
@@ -67,27 +71,75 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
         .required("Price is required")
         .min(0, "Price can't be negative"),
     }),
+    // onSubmit: async (data) => {
+    //   // dispatch(updateProductVariantAPI())for updateProductVariant
+    //   setLoading(true);
+    //   const payload = {
+    //     ...data,
+    //     stock: Number(data.stock),
+    //     price: Number(data.price),
+    //     attachment: imageUrl,
+    //   };
+
+    //   try {
+    //     await dispatch(createProductVariant(payload))
+    //       .unwrap()
+    //       .then((res) => {
+    //         toast.success("Product variant created successfully");
+    //         handleClose();
+    //       })
+    //       .catch((err) => {
+    //         toast.error(err?.message || "Error creating product variant");
+    //       })
+    //       .finally(() => {
+    //         setLoading(false);
+    //       });
+    //   } catch (error) {
+    //     console.error("Error creating product variant:", error);
+    //   }
+    // },
     onSubmit: async (data) => {
+      setLoading(true);
       const payload = {
         ...data,
         stock: Number(data.stock),
         price: Number(data.price),
-        attachment: imageUrl,
+        attachment: imageUrl, // Use updated image URL
       };
 
       try {
-        await dispatch(createProductVariant(payload))
-          .unwrap()
-          .then((res) => {
-            toast.success("Product variant created successfully");
-          })
-          .catch((err) => {
-            toast.error(err?.message || "Error creating product variant");
-          });
-
-        handleClose();
+        if (selectedVariant?.variantId) {
+          // Update API Call (PATCH)
+          await dispatch(
+            updateProductVariant({
+              id: selectedVariant.variantId,
+              data: payload,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              toast.success("Product variant updated successfully");
+              handleClose();
+            })
+            .catch((err) => {
+              toast.error(err?.message || "Error updating product variant");
+            });
+        } else {
+          // Create API Call (POST)
+          await dispatch(createProductVariant(payload))
+            .unwrap()
+            .then(() => {
+              toast.success("Product variant created successfully");
+              handleClose();
+            })
+            .catch((err) => {
+              toast.error(err?.message || "Error creating product variant");
+            });
+        }
       } catch (error) {
-        console.error("Error creating product variant:", error);
+        console.error("Error submitting product variant:", error);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -128,8 +180,8 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
               ) : productsData?.length > 0 ? (
                 <>
                   <SingleSelect
-                    title="Select a Category"
-                    textFieldLabel="Select Category"
+                    title="Select a product"
+                    textFieldLabel="Select a product"
                     value={
                       productsData.find(
                         (product: { productId: string }) =>
@@ -148,8 +200,14 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                     }
                     onBlur={formik.handleBlur("productId")}
                     name="productId"
-                    titleStyle={{ color: "#2E2B2A", fontSize: "14px" }}
-                    sx={{ fontSize: "14px", height: "45px" }}
+                    titleStyle={{
+                      color: "#2E2B2A",
+                      fontSize: "14px",
+                      fontFamily: "Helvetica",
+                    }}
+                    sx={{
+                      height: "45px",
+                    }}
                   />
 
                   {formik.touched.productId && formik.errors.productId && (
@@ -190,6 +248,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
           {/* Image Section */}
           <Grid
             size={{ xs: 12, md: 4 }}
+            order={{ xs: -1, md: 0 }}
             component="div"
             sx={{
               display: "flex",
@@ -348,7 +407,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                 formik.handleSubmit();
               }}
             >
-              {isImageUploading ? (
+              {isImageUploading || loading ? (
                 <ThreeDots
                   height="28"
                   width="40"
@@ -359,8 +418,14 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                 />
               ) : (
                 <>
-                  <AddIcon sx={{ marginRight: 1 }} />
-                  Create
+                  {selectedVariant?.variantId ? (
+                    "Update"
+                  ) : (
+                    <>
+                      {" "}
+                      <AddIcon sx={{ marginRight: 1 }} /> Create{" "}
+                    </>
+                  )}
                 </>
               )}
             </Button>

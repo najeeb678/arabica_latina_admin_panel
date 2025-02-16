@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getProductVariants, postProductVariant, deleteProductVariantAPI } from "../api/ProductVariantsApi";
+import { getProductVariants, postProductVariant, deleteProductVariantAPI, updateProductVariantAPI } from "../api/ProductVariantsApi";
 
 export const fetchProductVariants = createAsyncThunk(
    "productVariants/fetchProductVariants", 
@@ -49,6 +49,19 @@ export const deleteProductVariant = createAsyncThunk(
     }
   }
 );
+export const updateProductVariant = createAsyncThunk(
+  "productVariants/updateProductVariant", 
+  async ({ id, data }: { id: string; data: any }, thunkAPI) => {
+    try {
+      const response = await updateProductVariantAPI(id, data); 
+      return response; 
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to update product variant");
+    }
+  }
+);
+
+
 
 
 interface ProductVariant {

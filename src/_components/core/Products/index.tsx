@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import _debounce from "lodash/debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { getAllProducts, deleteProduct } from "@/redux/slices/productsSlice"; // Import deleteProduct action
+import { getAllProducts, deleteProduct } from "@/redux/slices/productsSlice"; 
 import GenericTable from "@/_components/common/GenericTable";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import { ButtonConfig, Column, FilterConfig } from "@/types/types";
@@ -170,11 +170,11 @@ const AdminProductsTable = () => {
   ];
 
   const handleOpenUpdate = (row: any) => {
-    console.log("row", row);
+
     setSelectedProduct(row);
     setOpenProductModal(true);
   };
-  console.log("selectedProduct", selectedProduct);
+
   const handleProductDelete = (productId: string) => {
     dispatch(deleteProduct(productId))
       .unwrap()

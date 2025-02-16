@@ -36,14 +36,14 @@ const OrdersList = () => {
           ? order.orderItems
               .map((item: any) => item.variant?.product?.name)
               .join(", ")
-          : ""; // Default to an empty string if orderItems is undefined or null
+          : "";
         return {
           ...order,
           Sr_No: index + 1,
           productNames,
         };
       });
-      console.log("updatedOrders:", updatedOrders);
+
       setProcessedOrders(updatedOrders);
     }
   }, [orders]);

@@ -10,6 +10,7 @@ import {
 import { RootState, AppDispatch } from "../../../redux/store";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DropDownForActions from "@/_components/common/MenuDropDownForActions/DropDownForActions";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import {
   ProductVariants as ProductVariantsType,
   ButtonConfig,
@@ -31,7 +32,7 @@ const ProductVariantsList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isAddProductVariantFormOpen, setisAddProductVariantFormOpen] =
     useState<boolean>(false);
-
+console.log("selectedVariant",selectedVariant)
   useEffect(() => {
     dispatch(fetchProductVariants());
   }, [dispatch]);
@@ -47,7 +48,7 @@ const ProductVariantsList = () => {
       setProcessedVariants(updatedVariants);
     }
   }, [ProductVariants]);
-  console.log("ProductVariants1122: ", ProductVariants);
+
 
   const handleDeleteVariant = () => {
     if (selectedVariant && selectedVariant.variantId) {
@@ -56,7 +57,7 @@ const ProductVariantsList = () => {
       setSelectedVariant(null);
       dispatch(fetchProductVariants());
     } else {
-      console.error("Selected product variant is missing an ID");
+      // console.error("Selected product variant is missing an ID");
     }
   };
 
@@ -108,6 +109,17 @@ const ProductVariantsList = () => {
           items={[
             {
               icon: (
+                <DriveFileRenameOutlineIcon
+                  fontSize="inherit"
+                  color="primary"
+                  sx={{ fontSize: "12px" }}
+                />
+              ),
+              label: "Update",
+              onClick: () => handleOpenUpdate(row),
+            },
+            {
+              icon: (
                 <DeleteIcon
                   fontSize="inherit"
                   color="error"
@@ -127,6 +139,7 @@ const ProductVariantsList = () => {
   ];
 
   const handleNewVariant = () => {
+    setSelectedVariant(null);
     setisAddProductVariantFormOpen(true);
   };
 
@@ -155,7 +168,11 @@ const ProductVariantsList = () => {
     setisAddProductVariantFormOpen(false);
     dispatch(fetchProductVariants());
   };
+  const handleOpenUpdate = (row: any) => {
 
+    setSelectedVariant(row);
+    setisAddProductVariantFormOpen(true);
+  };
   return (
     <div>
       <GenericTable
@@ -170,13 +187,13 @@ const ProductVariantsList = () => {
       <CustomModal
         open={isAddProductVariantFormOpen}
         title={"Create Product Variant"}
-        modalWidth="40%"
+        modalWidth="60%"
         handleClose={() => {
           setisAddProductVariantFormOpen(false);
           dispatch(fetchProductVariants());
         }}
       >
-        <ProductVariantForm handleClose={handleCloseForm} />
+        <ProductVariantForm handleClose={handleCloseForm} selectedVariant={selectedVariant} />
       </CustomModal>
 
       <TransitionsDialog

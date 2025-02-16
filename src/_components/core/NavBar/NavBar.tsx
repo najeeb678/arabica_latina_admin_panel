@@ -5,10 +5,11 @@ import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccessPanel from "../AccessPanel/AccessPanel";
 import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/router";
 
 const NavBar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const router = useRouter();
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
   };
@@ -24,7 +25,7 @@ const NavBar = () => {
         padding: "0px 25px 0px 10px",
       }}
     >
-      <Box>
+      <Box onClick={() => router.push("/")} sx={{ cursor: "pointer" }}>
         <img
           src="/logo.svg"
           alt="web logo"
@@ -102,7 +103,7 @@ const NavBar = () => {
             cursor: "pointer",
           }}
         >
-          <Box>
+          <Box onClick={() => router.push("/")}>
             <img
               src="/logo.svg"
               alt="web logo"

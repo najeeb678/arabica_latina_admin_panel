@@ -17,6 +17,7 @@ import { fetchCategories } from "@/redux/slices/categoriesSlice";
 
 import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 
+
 interface AddProductProps {
   handleClose?: () => void;
   productDetails?: any;
@@ -31,10 +32,10 @@ const AddProduct: React.FC<AddProductProps> = ({
   handleClose = () => {},
   productDetails,
 }) => {
-  console.log("product...", productDetails);
+
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
-  const { categories } = useSelector((state: any) => state.categories); // Assuming categories are stored here
+  const { categories } = useSelector((state: any) => state.categories); 
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -174,6 +175,15 @@ const AddProduct: React.FC<AddProductProps> = ({
                 }
                 onBlur={formik.handleBlur("categoryId")}
                 name="categoryId"
+                titleStyle={{
+                  color: "#2E2B2A",
+                  fontSize: "14px",
+                  fontFamily: "Helvetica",
+                  marginBottom: "7px",
+                }}
+                sx={{
+                  height: "45px",
+                }}
               />
 
               {formik.touched.categoryId && formik.errors.categoryId && (
@@ -264,6 +274,14 @@ const AddProduct: React.FC<AddProductProps> = ({
                   formik.setFieldValue("productType", (val as any)?.value)
                 }
                 onBlur={formik.handleBlur("productType")}
+                titleStyle={{
+                  color: "#2E2B2A",
+                  fontSize: "14px",
+                  fontFamily: "Helvetica",
+                }}
+                sx={{
+                  height: "45px",
+                }}
               />
               {formik.touched.productType && formik.errors.productType && (
                 <Typography color="error" variant="caption">

@@ -80,6 +80,7 @@ const SingleSelect: React.FC<SingleSelectProps> = ({
             "& .MuiOutlinedInput-root": {
               borderRadius: "8px",
               height: "40px",
+              
               ...sx,
             },
             "& .MuiInputBase-root": {

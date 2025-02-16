@@ -9,15 +9,12 @@ import { RiArrowDropDownLine, RiArrowDropRightLine } from "react-icons/ri";
 
 import ProfileMenu from "../NavBar/ProfileMenu";
 
-
-
 const AccessPanel = () => {
   const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [role, setRole] = useState<string | null>(null);
-
 
   const sidebarData = getSidebarData(role);
   useEffect(() => {
@@ -107,13 +104,13 @@ const AccessPanel = () => {
               onClick={() => {
                 if (!item.subMenu) {
                   setSelectedPath(item.path);
+                  router.push(item.path);
                 } else {
                   handleSubMenuToggle(item, index);
                 }
               }}
             >
-              <Link
-                href={item.path || "#"}
+              <Box
                 style={{
                   display: "flex",
                   textDecoration: "none",
@@ -164,7 +161,7 @@ const AccessPanel = () => {
                     )}
                   </Box>
                 )}
-              </Link>
+              </Box>
             </Box>
 
             {/* Render submenu items */}

@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import _debounce from "lodash/debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { getAllProducts, deleteProduct } from "@/redux/slices/productsSlice"; 
+import { getAllProducts, deleteProduct } from "@/redux/slices/productsSlice";
 import GenericTable from "@/_components/common/GenericTable";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import { ButtonConfig, Column, FilterConfig } from "@/types/types";
 import { Box } from "@mui/material";
-import { formatDate } from "@/utils/utils";
+import { formatDate, sliceDescription } from "@/utils/utils";
 import EditProduct from "./UpdateProduct";
 import DropDownForActions from "@/_components/common/MenuDropDownForActions/DropDownForActions";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
@@ -32,7 +32,7 @@ const AdminProductsTable = () => {
     dispatch(getAllProducts({ search: filteredName, filter: productsFilter }))
       .unwrap()
       .then((res) => {
-        console.log("Fetched Products Data:", res);
+        // console.log("Fetched Products Data:", res);
       })
       .catch((err) => {
         console.error("Error Fetching Products Data:", err);
@@ -49,7 +49,7 @@ const AdminProductsTable = () => {
         Product_ID: product?.productId || "N/A",
         Name: product?.name || "N/A",
         Base_Price: product?.basePrice || 0,
-        Description: product?.description || "N/A",
+        Description: sliceDescription(product?.description, 20) || "N/A",
         Created_At: formatDate(product?.createdAt) || "N/A",
         Updated_At: formatDate(product?.updatedAt) || "N/A",
         Product_Type: product?.productType || "N/A",
@@ -170,7 +170,6 @@ const AdminProductsTable = () => {
   ];
 
   const handleOpenUpdate = (row: any) => {
-
     setSelectedProduct(row);
     setOpenProductModal(true);
   };

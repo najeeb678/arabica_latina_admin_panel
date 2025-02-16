@@ -19,6 +19,7 @@ import { Modal } from "@mui/material";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
 import ProductVariantForm from "./ProductVariantForm";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
+import { toast } from "react-toastify";
 
 const ProductVariantsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,7 +33,7 @@ const ProductVariantsList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isAddProductVariantFormOpen, setisAddProductVariantFormOpen] =
     useState<boolean>(false);
-console.log("selectedVariant",selectedVariant)
+
   useEffect(() => {
     dispatch(fetchProductVariants());
   }, [dispatch]);
@@ -49,13 +50,18 @@ console.log("selectedVariant",selectedVariant)
     }
   }, [ProductVariants]);
 
-
   const handleDeleteVariant = () => {
     if (selectedVariant && selectedVariant.variantId) {
-      dispatch(deleteProductVariant(selectedVariant.variantId));
+      dispatch(deleteProductVariant(selectedVariant.variantId))
+        .unwrap()
+        .then(() => {
+          toast.success("Product variant deleted successfully");
+        })
+        .catch((err) =>
+          toast.error(err.message || "Error deleting product variant")
+        );
       setIsDeleteModalOpen(false);
       setSelectedVariant(null);
-      dispatch(fetchProductVariants());
     } else {
       // console.error("Selected product variant is missing an ID");
     }
@@ -166,10 +172,9 @@ console.log("selectedVariant",selectedVariant)
 
   const handleCloseForm = () => {
     setisAddProductVariantFormOpen(false);
-    dispatch(fetchProductVariants());
+    // dispatch(fetchProductVariants());
   };
   const handleOpenUpdate = (row: any) => {
-
     setSelectedVariant(row);
     setisAddProductVariantFormOpen(true);
   };
@@ -186,14 +191,21 @@ console.log("selectedVariant",selectedVariant)
 
       <CustomModal
         open={isAddProductVariantFormOpen}
-        title={"Create Product Variant"}
+        title={
+          selectedVariant?.variantId
+            ? "Update Product Variant"
+            : "Create Product Variant"
+        }
         modalWidth="60%"
         handleClose={() => {
           setisAddProductVariantFormOpen(false);
-          dispatch(fetchProductVariants());
+          // dispatch(fetchProductVariants());
         }}
       >
-        <ProductVariantForm handleClose={handleCloseForm} selectedVariant={selectedVariant} />
+        <ProductVariantForm
+          handleClose={handleCloseForm}
+          selectedVariant={selectedVariant}
+        />
       </CustomModal>
 
       <TransitionsDialog

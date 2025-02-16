@@ -136,3 +136,8 @@ export const formatDate = (date: string | Date | null | undefined): string => {
     return "N/A"; // Fallback for unexpected errors
   }
 };
+
+export const sliceDescription = (text: string, length: number) => {
+  if (!text) return "";
+  return text.length > length ? text.slice(0, length) + "..." : text;
+};

@@ -383,7 +383,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
             sx={{
               width: "100%",
               display: "flex",
-              justifyContent: "flex-start",
+              justifyContent: "flex-end",
             }}
           >
             <Button

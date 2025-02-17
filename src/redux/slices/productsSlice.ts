@@ -3,7 +3,7 @@ import { addProductApi, getAllProductsApi, updateProductApi, deleteProductApi  }
 
 export const getAllProducts = createAsyncThunk<
   any,
-  { search?: string; filter?: string } | any
+  { search?: string; filter?: string,admin?:boolean } | any
 >("products/getAllProducts", async (filters, { rejectWithValue }) => {
   try {
     const data = await getAllProductsApi(filters);

@@ -29,7 +29,7 @@ const AdminProductsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getAllProducts({ search: filteredName, filter: productsFilter }))
+    dispatch(getAllProducts({ search: filteredName, filter: productsFilter ,admin:true}))
       .unwrap()
       .then((res) => {
         // console.log("Fetched Products Data:", res);

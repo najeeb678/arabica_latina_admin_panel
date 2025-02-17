@@ -17,7 +17,6 @@ import { fetchCategories } from "@/redux/slices/categoriesSlice";
 
 import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 
-
 interface AddProductProps {
   handleClose?: () => void;
   productDetails?: any;
@@ -32,10 +31,9 @@ const AddProduct: React.FC<AddProductProps> = ({
   handleClose = () => {},
   productDetails,
 }) => {
-
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
-  const { categories } = useSelector((state: any) => state.categories); 
+  const { categories } = useSelector((state: any) => state.categories);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -46,7 +44,7 @@ const AddProduct: React.FC<AddProductProps> = ({
       name: productDetails?.name || "",
       description: productDetails?.description || "",
       categoryId: productDetails?.categoryId || "",
-      basePrice: productDetails?.basePrice?.toString() || "",
+      basePrice: productDetails?.basePrice || "",
       composition: productDetails?.composition || "",
       weight: productDetails?.weight || "",
       productType: productDetails?.productType || "",
@@ -55,7 +53,10 @@ const AddProduct: React.FC<AddProductProps> = ({
       name: Yup.string().required("Product name is required"),
       description: Yup.string().required("Description is required"),
       categoryId: Yup.string().required("Category ID is required"),
-      basePrice: Yup.string().required("Base price is required"),
+      basePrice: Yup.number()
+        .required("Base price is required")
+        .integer("Base price must be an integer")
+        .typeError("Base price must be a valid number"),
       composition: Yup.string().required("Composition is required"),
       weight: Yup.string().required("Weight is required"),
       productType: Yup.string().required("Product type is required"),

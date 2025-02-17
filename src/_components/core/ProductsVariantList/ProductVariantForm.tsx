@@ -119,7 +119,13 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
 
   // Fetch products on mount
   useEffect(() => {
-    dispatch(getAllProducts({})); // Dispatch the action to fetch products
+    dispatch(
+      getAllProducts({
+        search: "",
+        filter: "",
+        admin: true,
+      })
+    );
   }, [dispatch]);
 
   const handleImageUpdate = (imageUrl: string) => {

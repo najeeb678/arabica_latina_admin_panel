@@ -15,15 +15,15 @@ import AddCategoryForm from "./AddCategoryForm";
 import { Modal } from "@mui/material";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import { toast } from "react-toastify";
 
 const Categories = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, loading } = useSelector(
     (state: RootState) => state.categories
   );
-  const [processedCategories, setProcessedCategories] = useState<any[]>(
-    []
-  );
+  const [processedCategories, setProcessedCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -34,12 +34,6 @@ const Categories = () => {
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      console.log("Updated selectedCategory:", selectedCategory.categoryId);
-    }
-  }, [selectedCategory]);
 
   useEffect(() => {
     if (categories) {
@@ -54,20 +48,18 @@ const Categories = () => {
   }, [categories]);
 
   const handleOpenUpdate = (row: Category) => {
-    console.log("Update Category:", row);
+    setSelectedCategory(row);
+    setIsAddCategoryFormOpen(true);
   };
 
   const handleDeleteCategory = async () => {
     if (selectedCategory && selectedCategory.categoryId) {
       try {
-        await dispatch(removeCategory(selectedCategory.categoryId)).unwrap();
-        console.log("Deleted category:", selectedCategory.categoryId);
-
-        setProcessedCategories((prevCategories) =>
-          prevCategories.filter(
-            (category) => category.categoryId !== selectedCategory.categoryId
-          )
-        );
+        await dispatch(removeCategory(selectedCategory.categoryId))
+          .unwrap()
+          .then(() => {
+            toast.success("Category deleted successfully");
+          });
 
         setIsDeleteModalOpen(false);
         setSelectedCategory(null);
@@ -127,6 +119,17 @@ const Categories = () => {
           items={[
             {
               icon: (
+                <DriveFileRenameOutlineIcon
+                  fontSize="inherit"
+                  color="primary"
+                  sx={{ fontSize: "12px" }}
+                />
+              ),
+              label: "Update",
+              onClick: () => handleOpenUpdate(row),
+            },
+            {
+              icon: (
                 <DeleteIcon
                   fontSize="inherit"
                   color="error"
@@ -146,6 +149,7 @@ const Categories = () => {
   ];
 
   const handleNewCategory = () => {
+    selectedCategory && setSelectedCategory(null);
     setIsAddCategoryFormOpen(true);
   };
 
@@ -188,10 +192,13 @@ const Categories = () => {
       <CustomModal
         open={isAddCategoryFormOpen}
         modalWidth="50%"
-        title={"Add Category"}
+        title={selectedCategory ? "Update Category" : "Add Category"}
         handleClose={() => setIsAddCategoryFormOpen(false)}
       >
-        <AddCategoryForm handleClose={handleCloseForm} />
+        <AddCategoryForm
+          handleClose={handleCloseForm}
+          categoryData={selectedCategory}
+        />
       </CustomModal>
 
       <TransitionsDialog

@@ -6,13 +6,24 @@ export const getCategories = async () => {
   return response.data;
 };
 
-
 // Create a new category
-export const createCategory = async (categoryData: { name: string; gender: string; categoryImage?: string }) => {
+export const createCategory = async (categoryData: {
+  name: string;
+  gender: string;
+  categoryImage?: string;
+}) => {
   const response = await api.post("/categories", categoryData);
   return response.data;
 };
 
+export const updateCategoryApi = async (id: string, payload: any) => {
+  try {
+    const response = await api.patch(`/categories/${id}`, payload);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to update category with ID: ${id}`);
+  }
+};
 export const deleteCategory = async (id: string) => {
   const response = await api.delete(`/categories/${id}`);
   return response.data;

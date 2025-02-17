@@ -71,33 +71,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
         .required("Price is required")
         .min(0, "Price can't be negative"),
     }),
-    // onSubmit: async (data) => {
-    //   // dispatch(updateProductVariantAPI())for updateProductVariant
-    //   setLoading(true);
-    //   const payload = {
-    //     ...data,
-    //     stock: Number(data.stock),
-    //     price: Number(data.price),
-    //     attachment: imageUrl,
-    //   };
 
-    //   try {
-    //     await dispatch(createProductVariant(payload))
-    //       .unwrap()
-    //       .then((res) => {
-    //         toast.success("Product variant created successfully");
-    //         handleClose();
-    //       })
-    //       .catch((err) => {
-    //         toast.error(err?.message || "Error creating product variant");
-    //       })
-    //       .finally(() => {
-    //         setLoading(false);
-    //       });
-    //   } catch (error) {
-    //     console.error("Error creating product variant:", error);
-    //   }
-    // },
     onSubmit: async (data) => {
       setLoading(true);
       const payload = {
@@ -109,7 +83,6 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
 
       try {
         if (selectedVariant?.variantId) {
-          // Update API Call (PATCH)
           await dispatch(
             updateProductVariant({
               id: selectedVariant.variantId,

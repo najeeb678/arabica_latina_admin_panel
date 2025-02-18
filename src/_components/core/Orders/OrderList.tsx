@@ -11,6 +11,7 @@ import { RootState, AppDispatch } from "../../../redux/store";
 import { Orders as OrdersType } from "@/types/types";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
 import StatusDropdown from "@/_components/common/SelectDropdown/StatusDropdown";
+import { toast } from "react-toastify";
 
 const OrdersList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,7 +54,14 @@ const OrdersList = () => {
   };
 
   const handleStatusChange = (newStatus: string, orderId: string) => {
-    dispatch(updateOrderStatusAsync({ orderId, status: newStatus }));
+    dispatch(updateOrderStatusAsync({ orderId, status: newStatus }))
+      .unwrap()
+      .then((res) => {
+        toast.success("Status updated successfully!");
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Error updating status");
+      });
   };
 
   const columns = [

@@ -25,7 +25,7 @@ const LoaderComponent: React.FC<LoaderComponentProps> = ({
         ...style,
       }}
     >
-      <CircularProgress size={circleSize} sx={{ color: "#A44819" }} />
+      <CircularProgress size={circleSize} sx={{ color: "#fbc02d" }} />
     </Box>
   );
 };

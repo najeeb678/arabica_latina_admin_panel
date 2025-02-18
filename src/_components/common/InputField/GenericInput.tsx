@@ -98,7 +98,7 @@ const GenericInput: React.FC<GenericInputProps> = ({
         fullWidth
         placeholder={placeholder}
         multiline={multiLine}
-        minRows={multiLine ? 4 : 1}
+        minRows={multiLine ? 6 : 1}
         InputProps={{
           readOnly: readonly,
           inputMode: type === "number" ? "numeric" : "text",
@@ -121,7 +121,7 @@ const GenericInput: React.FC<GenericInputProps> = ({
           ...sx,
           "& .MuiOutlinedInput-root": {
             borderRadius: noBorderRadius ? "0px" : "5px",
-            height: inputfieldHeight || "40px",
+            height: multiLine ? "auto" : inputfieldHeight || "40px",
 
             fontSize: "14px",
             padding: "0px 6px",
@@ -130,6 +130,11 @@ const GenericInput: React.FC<GenericInputProps> = ({
             },
             "&.Mui-focused fieldset": {
               borderColor: "#D7D7D7",
+            },
+            "& .MuiInputBase-input": {
+              paddingTop: "10px",
+              paddingBottom: "10px",
+              fontSize: "14px",
             },
             "& .MuiInputAdornment-root": {},
           },

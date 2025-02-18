@@ -1,23 +1,42 @@
 import React, { useEffect, useState, FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, CardContent, Grid } from "@mui/material";
+import { Box, Button, CardContent } from "@mui/material";
 import { RootState } from "@/redux/store";
-import { getInquiries, sendInquiryResponse } from "@/redux/slices/inquiriesSlice";
+import Grid from "@mui/material/Grid2";
+import {
+  getInquiries,
+  sendInquiryResponse,
+} from "@/redux/slices/inquiriesSlice";
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import CustomTypography from "@/_components/common/CustomTypography/CustomTypography";
 import GenericInput from "@/_components/common/InputField/GenericInput";
-import { CheckCircleOutline, ErrorOutline, Assignment } from "@mui/icons-material";
+import {
+  CheckCircleOutline,
+  ErrorOutline,
+  Assignment,
+} from "@mui/icons-material";
 import GenericCard from "@/_components/common/GenericCard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoaderComponent from "@/_components/common/LoaderComponent";
 
-const InquiryStats = ({ title, value, icon }: { title: string; value: number; icon: JSX.Element }) => (
-  <Grid item xs={12} sm={6} md={4}>
+const InquiryStats = ({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: number;
+  icon: JSX.Element;
+}) => (
+  <Grid component="div" size={{ xs: 12, sm: 4 }} sx={{}}>
     <GenericCard>
       <CardContent>
         <Box display="flex" alignItems="center" gap={2}>
           {icon}
-          <CustomTypography variant fontWeight="bold">{title}</CustomTypography>
+          <CustomTypography variant fontWeight="bold">
+            {title}
+          </CustomTypography>
         </Box>
         <Box mt={1.5}>
           <CustomTypography variant fontWeight="bold" fontSize="1.6rem">
@@ -29,19 +48,30 @@ const InquiryStats = ({ title, value, icon }: { title: string; value: number; ic
   </Grid>
 );
 
-const InquiryItem: FC<{ inquiry: any; onView: () => void }> = ({ inquiry, onView }) => (
-  <GenericCard>
-    <CardContent>
+const InquiryItem: FC<{ inquiry: any; onView: () => void }> = ({
+  inquiry,
+  onView,
+}) => (
+  <GenericCard height="180px" padding="0px">
+    <CardContent sx={{ padding: "12px 20px" }}>
       <CustomTypography fontFamily="var(--font-raleway)" fontWeight="bold">
         Inquiry from {inquiry.user.name}
       </CustomTypography>
-      <CustomTypography fontFamily="var(--font-raleway)" color="text.secondary">
+      <CustomTypography
+        fontFamily="var(--font-raleway)"
+        color="text.secondary"
+        sx={{ marginTop: "10px" }}
+      >
         {inquiry.description}
       </CustomTypography>
-      <CustomTypography fontFamily="var(--font-raleway)" color="text.secondary">
+      <CustomTypography
+        fontFamily="var(--font-raleway)"
+        color="text.secondary"
+        sx={{ marginTop: "6px" }}
+      >
         {new Date(inquiry.createdAt).toLocaleDateString()}
       </CustomTypography>
-      <Box mt={2} display="flex" justifyContent="space-between">
+      <Box mt={4} display="flex" justifyContent="space-between">
         <Button
           variant="contained"
           sx={{
@@ -51,13 +81,21 @@ const InquiryItem: FC<{ inquiry: any; onView: () => void }> = ({ inquiry, onView
             backgroundColor: "#FBC02D",
             boxShadow: "none",
             transition: "all 0.2s ease-in-out",
-            "&:hover": { backgroundColor: "#FBC02D", boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.3)", transform: "scale(1.05)" },
+            "&:hover": {
+              backgroundColor: "#FBC02D",
+              boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.3)",
+              transform: "scale(1.05)",
+            },
           }}
           onClick={onView}
         >
           View Details
         </Button>
-        <CustomTypography fontFamily="var(--font-raleway)" fontWeight="bold" color={inquiry.is_Active ? "red" : "green"}>
+        <CustomTypography
+          fontFamily="var(--font-raleway)"
+          fontWeight="bold"
+          color={inquiry.is_Active ? "red" : "green"}
+        >
           {inquiry.is_Active ? "Active" : "Resolved"}
         </CustomTypography>
       </Box>
@@ -67,14 +105,16 @@ const InquiryItem: FC<{ inquiry: any; onView: () => void }> = ({ inquiry, onView
 
 const Inquiries = () => {
   const dispatch = useDispatch<any>();
-  const { inquiries, loading } = useSelector((state: RootState) => state.inquiries);
+  const { inquiries, loading } = useSelector(
+    (state: RootState) => state.inquiries
+  );
   const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getInquiries());
-  }, [dispatch]);
+  }, [dispatch,inquiries?.length]);
 
   const handleOpenInquiry = (inquiry: any) => {
     setSelectedInquiry(inquiry);
@@ -83,7 +123,7 @@ const Inquiries = () => {
 
   const handleReply = async () => {
     if (!selectedInquiry) return;
-  
+
     try {
       await dispatch(
         sendInquiryResponse({
@@ -93,13 +133,13 @@ const Inquiries = () => {
           message: replyMessage,
         })
       );
-  
-      toast.success("Reply sent successfully!"); 
+
+      toast.success("Reply sent successfully!");
       setIsReplyModalOpen(false);
       setReplyMessage("");
     } catch (error) {
       console.error("Failed to send reply:", error);
-      toast.error("Failed to send reply. Please try again."); 
+      toast.error("Failed to send reply. Please try again.");
     }
   };
 
@@ -111,21 +151,43 @@ const Inquiries = () => {
 
       <Grid container spacing={3}>
         {[
-          { title: "Total Inquiries", value: inquiries?.length || 0, icon: <Assignment sx={{ color: "#FBC02D", fontSize: "2rem" }} /> },
-          { title: "Resolved Inquiries", value: inquiries?.filter((inquiry) => !inquiry.is_Active).length || 0, icon: <CheckCircleOutline sx={{ color: "green", fontSize: "2rem" }} /> },
-          { title: "Active Inquiries", value: inquiries?.filter((inquiry) => inquiry.is_Active).length || 0, icon: <ErrorOutline sx={{ color: "red", fontSize: "2rem" }} /> },
+          {
+            title: "Total Inquiries",
+            value: inquiries?.length || 0,
+            icon: <Assignment sx={{ color: "#FBC02D", fontSize: "2rem" }} />,
+          },
+          {
+            title: "Resolved Inquiries",
+            value:
+              inquiries?.filter((inquiry) => !inquiry.is_Active).length || 0,
+            icon: (
+              <CheckCircleOutline sx={{ color: "green", fontSize: "2rem" }} />
+            ),
+          },
+          {
+            title: "Active Inquiries",
+            value:
+              inquiries?.filter((inquiry) => inquiry.is_Active).length || 0,
+            icon: <ErrorOutline sx={{ color: "red", fontSize: "2rem" }} />,
+          },
         ].map((stat, index) => (
           <InquiryStats key={index} {...stat} />
         ))}
       </Grid>
 
       {loading ? (
-        <CustomTypography variant>Loading inquiries...</CustomTypography>
+        <LoaderComponent />
       ) : (
-        inquiries?.map((inquiry) => <InquiryItem key={inquiry.orderInquiriesId} inquiry={inquiry} onView={() => handleOpenInquiry(inquiry)} />)
+        inquiries?.map((inquiry) => (
+          <InquiryItem
+            key={inquiry.orderInquiriesId}
+            inquiry={inquiry}
+            onView={() => handleOpenInquiry(inquiry)}
+          />
+        ))
       )}
- {/* Inquiry Details Modal */}
- <CustomModal
+      {/* Inquiry Details Modal */}
+      <CustomModal
         open={isReplyModalOpen}
         handleClose={() => setIsReplyModalOpen(false)}
         title="Inquiry Details"
@@ -256,39 +318,48 @@ const Inquiries = () => {
                 Respond to Inquiry
               </CustomTypography>
               <GenericInput
-                inputfieldHeight="120px"
                 placeholder="Write your reply..."
                 multiLine={true}
-                disabled = {selectedInquiry.is_Active ? false : true}
+                disabled={selectedInquiry.is_Active ? false : true}
                 value={replyMessage}
-                onChange={(newValue: string) => setReplyMessage(newValue)} 
+                onChange={(newValue: string) => setReplyMessage(newValue)}
+                sx={{ fontSize: "40px" }}
               />
-
-              <Button
-                title="Reply"
-                type="submit"
-                variant="contained"
-                disabled = {selectedInquiry.is_Active ? false : true}
+              <Box
                 sx={{
-                  fontFamily:"var(--font-raleway)",
-                  fontSize: "13px !important",
-                  fontWeight: "400 !important",
-                  borderRadius: "50px !important",
-                  backgroundColor: "#FBC02D !important",
-                  boxShadow: "none",
-                  transition: "all 0.2s ease-in-out",
-                  "&:hover": {
-                    fontFamily:"var(--font-raleway)",
-                    backgroundColor: "#FBC02D !important",
-                    color: "white !important",
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.5 )",
-                    transform: "scale(1.005)",
-                  },
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  mt: 2,
                 }}
-                onClick={handleReply}
               >
-                Reply
-              </Button>
+                <Button
+                  title="Reply"
+                  type="submit"
+                  variant="contained"
+                  disabled={selectedInquiry.is_Active ? false : true}
+                  sx={{
+                    fontFamily: "var(--font-raleway)",
+                    fontSize: "13px !important",
+
+                    fontWeight: "400 !important",
+                    borderRadius: "50px !important",
+                    backgroundColor: "#FBC02D !important",
+                    boxShadow: "none",
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      fontFamily: "var(--font-raleway)",
+                      backgroundColor: "#FBC02D !important",
+                      color: "white !important",
+                      boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.5 )",
+                      transform: "scale(1.005)",
+                    },
+                  }}
+                  onClick={handleReply}
+                >
+                  Reply
+                </Button>
+              </Box>
             </Box>
           </Box>
         )}

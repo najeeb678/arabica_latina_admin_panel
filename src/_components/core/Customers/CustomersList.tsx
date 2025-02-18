@@ -30,7 +30,7 @@ const CustomersList = () => {
         Sr_No: index + 1,
       }));
 
-      // Set processed customers with additional fields if necessary
+
       setProcessedCustomers(updatedCustomers);
     }
   }, [customers]);
@@ -69,11 +69,7 @@ const CustomersList = () => {
       accessor: "contactNumber",
       render: (value: string | null) => <span>{value || "N/A"}</span>,
     },
-    {
-      label: "Address",
-      accessor: "address",
-      render: (value: string | null) => <span>{value || "N/A"}</span>,
-    },
+ 
     {
       label: "Subscription",
       accessor: "subscription",

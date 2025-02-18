@@ -41,19 +41,22 @@ export const createDiscount = createAsyncThunk(
       const data = await createDiscountApi(payload);
       return data;
     } catch (err: unknown) {
-      return rejectWithValue("Failed to create discount");
+      return rejectWithValue(err||"Failed to create discount");
     }
   }
 );
 
 export const updateDiscount = createAsyncThunk(
   "discount/updateDiscount",
-  async ({ id, payload }: { id: string; payload: { percentage: string } }, { rejectWithValue }) => {
+  async (
+    { id, payload }: { id: string; payload: { percentage: string } },
+    { rejectWithValue }
+  ) => {
     try {
       const data = await updateDiscountApi(id, payload);
       return { id, data };
     } catch (err: unknown) {
-      return rejectWithValue("Failed to update discount");
+      return rejectWithValue(err || "Failed to update discount");
     }
   }
 );
@@ -137,4 +140,3 @@ export const discountsSlice = createSlice({
 });
 
 export default discountsSlice.reducer;
-

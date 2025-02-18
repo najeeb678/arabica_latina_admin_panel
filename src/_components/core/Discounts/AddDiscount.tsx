@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Button } from "@mui/material";
 import { ThreeDots } from "react-loader-spinner";
+import { values } from "lodash";
 
 const AddDiscount = ({
   handleClose,
@@ -44,25 +45,28 @@ const AddDiscount = ({
             updateDiscount({ id: initialData.id, payload: values })
           )
             .unwrap()
+            .then(() => toast.success("Discount updated successfully!"))
+            .catch((err: any) => {
+              toast.error(err?.message || "Error updating discount");
+            })
             .finally(() => setLoading(false));
-          toast.success("Discount updated successfully!", {
-            position: "top-right",
-          });
         } else {
           await dispatch(createDiscount(values))
             .unwrap()
+            .then(() => toast.success("Discount added successfully!"))
+            .catch((err: any) => {
+              const errorMessage = Array.isArray(err?.message)
+                ? err.message.join(", ")
+                : err?.message || "Error creating discount";
+
+              toast.error(errorMessage);
+            })
             .finally(() => setLoading(false));
-          toast.success("Discount added successfully!", {
-            position: "top-right",
-          });
         }
 
-        resetForm();
         handleClose();
       } catch (error) {
-        toast.error("Failed to save discount. Please try again.", {
-          position: "top-right",
-        });
+        console.log(error);
       }
     },
   });
@@ -90,7 +94,7 @@ const AddDiscount = ({
               ? (formik.errors.percentage as any)
               : undefined
           }
-          placeholder="Enter Discount Percentage"
+          placeholder="Enter Discount Percentage between 1 to 100"
           sx={{ marginTop: "-10px" }}
           inputfieldHeight="45px"
         />

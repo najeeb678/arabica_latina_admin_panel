@@ -24,6 +24,7 @@ import Button from "./button";
 import { ButtonConfig, Column, FilterConfig } from "@/types/types";
 import CustomTypography from "./CustomTypography/CustomTypography";
 import { wrap } from "module";
+import NoData from "./NoData";
 
 // Update the props for GenericTable with a generic type T
 interface GenericTableProps<T> {
@@ -236,31 +237,7 @@ const GenericTable = <T extends {}>({
             <CircularProgress size={50} sx={{ color: "#fbc02d" }} />
           </Box>
         ) : data.length === 0 ? (
-          // No data available view
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              // justifyContent: "center",
-              // marginBottom: "20px",
-              alignItems: "center",
-              minHeight: "40vh",
-              textAlign: "center",
-            }}
-          >
-            <img
-              src="/images/no-data.png"
-              alt="No Data"
-              style={{
-                width: "150px", // Adjust the image size as needed
-                height: "auto",
-                marginBottom: "20px",
-              }}
-            />
-            <Typography variant="h6" color="textSecondary">
-              No data available
-            </Typography>
-          </Box>
+          <NoData />
         ) : (
           <Table aria-label="generic table">
             <TableHead sx={{ background: "#F5F5F5", height: "36px" }}>

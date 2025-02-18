@@ -36,7 +36,7 @@ const CustomersList = () => {
   }, [customers]);
 
   const handleDeleteCustomer = () => {
-    console.log("Selected customer ID:", selectedCustomer?.userId);
+    // console.log("Selected customer ID:", selectedCustomer?.userId);
     // Add logic to handle customer deletion
   };
 

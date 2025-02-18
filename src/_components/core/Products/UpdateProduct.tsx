@@ -68,7 +68,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       productType: Yup.string().required("Product type is required"),
     }),
     onSubmit: async (data) => {
-      console.log("Submitting Form Data1122: ", data);
+
       setLoading(true);
       const updatedData = {
         ...data,

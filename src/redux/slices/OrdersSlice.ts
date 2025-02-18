@@ -22,7 +22,7 @@ export const fetchOrdersAsync = createAsyncThunk(
   "orders/fetchOrders",
   async () => {
     const response = await fetchOrders();
-    console.log("Fetched orders from API:", response);
+
     return response.data;
   }
 );

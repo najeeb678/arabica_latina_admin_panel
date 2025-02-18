@@ -41,7 +41,7 @@ export const getInquiries = createAsyncThunk("inquiries/fetchAll", async () => {
 export const sendInquiryResponse = createAsyncThunk(
   "inquiries/sendReply",
   async ({orderInquiriesId, email, subject, message }: { orderInquiriesId: string, email: string; subject: string; message: string }) => {
-    console.log("in slice")
+
     const response = await sendInquiryReply( orderInquiriesId, email, subject, message );
     return response.data;
   }

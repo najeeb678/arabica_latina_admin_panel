@@ -121,7 +121,7 @@ const AdminProductsTable = () => {
   const onSearchProduct = (searchTerm: string) => {
     dispatch(getAllProducts({ search: searchTerm, filter: productsFilter }))
       .unwrap()
-      .then(() => console.log("Search complete"))
+      .then(() => {})
       .catch((err) => console.error("Search Error", err));
   };
 

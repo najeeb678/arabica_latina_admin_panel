@@ -3,7 +3,7 @@ import api from "@/services/api";
 // Send reply to an inquiry
 export const sendInquiryReply = async (orderInquiriesId: string, email: string, subject: string, message: string) => {
   try {
-    console.log("in api")
+
     const response = await api.post("orders/respond/mail", {orderInquiriesId, email, subject, message });
     return response.data;
   } catch (error) {

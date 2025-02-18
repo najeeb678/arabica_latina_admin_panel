@@ -54,7 +54,7 @@ const SignInForm = () => {
           router.push("/");
         })
         .catch((err) => {
-          console.log("errrr", err);
+
           toast.error(err?.message || "Failed to sign in. Please try again.");
         })
         .finally(() => {

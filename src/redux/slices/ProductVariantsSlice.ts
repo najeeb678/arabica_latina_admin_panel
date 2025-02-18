@@ -38,7 +38,6 @@ export const createProductVariant = createAsyncThunk<
     const data = await postProductVariant(payload);
     return data;
   } catch (error: any) {
-    console.log("ProductVari", error);
     return thunkAPI.rejectWithValue(
       error || "Failed to create product variant"
     );

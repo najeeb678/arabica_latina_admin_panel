@@ -14,6 +14,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import AddProduct from "./AddProduct";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialog";
+import { toast } from "react-toastify";
 
 const AdminProductsTable = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,11 +30,15 @@ const AdminProductsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(getAllProducts({ search: filteredName, filter: productsFilter ,admin:true}))
-      .unwrap()
-      .then((res) => {
-        // console.log("Fetched Products Data:", res);
+    dispatch(
+      getAllProducts({
+        search: filteredName,
+        filter: productsFilter,
+        admin: true,
       })
+    )
+      .unwrap()
+      .then((res) => {})
       .catch((err) => {
         console.error("Error Fetching Products Data:", err);
       });
@@ -44,7 +49,7 @@ const AdminProductsTable = () => {
   }, [searchInput]);
 
   const transformedProductsData = productsData
-    ? productsData.map((product: any, index: number) => ({
+    ? productsData?.map((product: any, index: number) => ({
         Sr_No: index + 1,
         Product_ID: product?.productId || "N/A",
         Name: product?.name || "N/A",
@@ -54,7 +59,7 @@ const AdminProductsTable = () => {
         Updated_At: formatDate(product?.updatedAt) || "N/A",
         Product_Type: product?.productType || "N/A",
         row: product,
-        Variants: product?.Variants.map((variant: any) => ({
+        Variants: product?.Variants?.map((variant: any) => ({
           Variant_ID: variant?.variantId || "N/A",
           Color: variant?.color || "N/A",
           Size: variant?.size || "N/A",
@@ -133,19 +138,6 @@ const AdminProductsTable = () => {
     setProductsFilter(value);
   };
 
-  const filters: FilterConfig[] = [
-    {
-      label: "Weekly",
-      options: [
-        { label: "Weekly", value: "weekly" },
-        { label: "Monthly", value: "monthly" },
-        { label: "Yearly", value: "yearly" },
-        { label: "All", value: "all" },
-      ],
-      onChange: handleSelectChange,
-    },
-  ];
-
   const buttons: ButtonConfig[] = [
     {
       label: "Create Product",
@@ -179,10 +171,11 @@ const AdminProductsTable = () => {
       .unwrap()
       .then(() => {
         setIsDeleteModalOpen(false);
-        console.log("Product deleted successfully");
+        toast.success("Product deleted successfully");
       })
       .catch((err) => {
-        console.error("Error deleting product:", err);
+        toast.error(err?.message || "Error deleting product");
+
         setIsDeleteModalOpen(false);
       });
   };
@@ -195,7 +188,6 @@ const AdminProductsTable = () => {
         title="Products"
         loading={loadingproductsData}
         buttons={buttons}
-        filters={filters}
       />
 
       <CustomModal

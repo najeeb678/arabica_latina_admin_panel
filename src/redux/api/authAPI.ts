@@ -5,7 +5,7 @@ import cookies from "next-cookies";
 export const signIn = async (credentials: { email: string, password: string }) => {
    try {
       const response = await api.post("/auth/login", credentials);
-      console.log("SignIn response: ", response)
+
       const userDetails = {
          token: response?.data.data?.access_token,
          name: response?.data.data?.name,

@@ -75,7 +75,6 @@ const AddProduct: React.FC<AddProductProps> = ({
           )
             .unwrap()
             .then((res) => {
-              dispatch(getAllProducts({ search: "", filter: "" }));
               toast.success("Product updated successfully");
             })
             .catch((err) => {
@@ -85,7 +84,6 @@ const AddProduct: React.FC<AddProductProps> = ({
           const res = await dispatch(addProduct(formData))
             .unwrap()
             .then((res) => {
-              dispatch(getAllProducts({ search: "", filter: "" }));
               toast.success("Product added successfully");
             })
             .catch((err) => {

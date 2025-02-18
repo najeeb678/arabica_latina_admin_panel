@@ -17,12 +17,8 @@ export const createCategory = async (categoryData: {
 };
 
 export const updateCategoryApi = async (id: string, payload: any) => {
-  try {
-    const response = await api.patch(`/categories/${id}`, payload);
-    return response.data;
-  } catch (error) {
-    throw new Error(`Failed to update category with ID: ${id}`);
-  }
+  const response = await api.patch(`/categories/${id}`, payload);
+  return response.data;
 };
 export const deleteCategory = async (id: string) => {
   const response = await api.delete(`/categories/${id}`);

@@ -37,7 +37,7 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  console.log("categoryData", categoryData?.categoryId);
+
   useEffect(() => {
     if (categoryData && categoryData !== false) {
       setIsUpdate(true);
@@ -70,6 +70,11 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
       gender: Yup.string().required("Type is required"),
     }),
     onSubmit: async (data: any) => {
+      if (!imageUrl) {
+        toast.error("Please upload an image");
+        setLoading(false);
+        return;
+      }
       // updateCategory
       const payload = {
         ...data,
@@ -101,7 +106,11 @@ const AddCategoryForm: React.FC<CategoryFormProps> = ({
               handleClose();
             })
             .catch((err) => {
-              toast.error(err?.message || "Error creating Category");
+              const errorMessage = Array.isArray(err?.message)
+                ? err.message.join(", ")
+                : err?.message || "Error creating Category";
+
+              toast.error(errorMessage);
             });
         }
       } catch (error) {

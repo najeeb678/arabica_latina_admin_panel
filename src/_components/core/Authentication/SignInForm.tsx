@@ -47,21 +47,19 @@ const SignInForm = () => {
     validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
-      try {
-        const response = await dispatch(signInThunk(values));
-        if (response.type === "auth/signIn/fulfilled") {
-          toast("Signed in successfully!", { type: "success" });
+      dispatch(signInThunk(values))
+        .unwrap()
+        .then(() => {
+          toast.success("Signed in successfully!", { type: "success" });
           router.push("/");
-        }
-      } catch (error: any) {
-        // Capture error message here
-        const errorMessage =
-          error.response?.data?.message ||
-          "Failed to sign in. Please try again.";
-        toast.error(errorMessage);
-      } finally {
-        setLoading(false);
-      }
+        })
+        .catch((err) => {
+          console.log("errrr", err);
+          toast.error(err?.message || "Failed to sign in. Please try again.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     },
   });
 

@@ -21,12 +21,8 @@ export const postProductVariant = async (payload: {
   stock: number;
   price: number;
 }) => {
-  try {
-    const response = await api.post("/product-variants", payload);
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to post product variant");
-  }
+  const response = await api.post("/product-variants", payload);
+  return response.data;
 };
 
 // Delete a product variant by ID

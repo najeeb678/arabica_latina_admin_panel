@@ -38,8 +38,9 @@ export const createProductVariant = createAsyncThunk<
     const data = await postProductVariant(payload);
     return data;
   } catch (error: any) {
+    console.log("ProductVari", error);
     return thunkAPI.rejectWithValue(
-      error.message || "Failed to create product variant"
+      error || "Failed to create product variant"
     );
   }
 });
@@ -133,19 +134,14 @@ export const productsVariantsSlice = createSlice({
       .addCase(createProductVariant.fulfilled, (state, action) => {
         state.creating = false;
 
-        // Ensure action.payload and action.payload.data exist
         const newVariant = (action.payload as any)?.data || action.payload;
 
-        // Find product details from existing state
-        const product = state.ProductVariants.find(
-          (variant: any) => variant.productId === newVariant.productId
-        )?.product;
-
-        // Push new variant with product details
-        state.ProductVariants.push({
-          ...newVariant,
-          product: product || { name: "Unknown Product" },
-        });
+        if (newVariant) {
+          state.ProductVariants.push({
+            ...newVariant,
+            product: newVariant.product || { name: "Unknown Product" },
+          });
+        }
       })
 
       .addCase(createProductVariant.rejected, (state, action) => {
@@ -171,7 +167,6 @@ export const productsVariantsSlice = createSlice({
         state.deleting = false;
 
         const newVariant = (action.payload as any)?.data || action.payload;
-
 
         if (!newVariant?.variantId) return;
 

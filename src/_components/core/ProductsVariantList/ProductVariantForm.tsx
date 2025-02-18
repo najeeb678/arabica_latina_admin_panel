@@ -74,6 +74,11 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
 
     onSubmit: async (data) => {
       setLoading(true);
+      if (!imageUrl) {
+        toast.error("Please upload an image");
+        setLoading(false);
+        return;
+      }
       const payload = {
         ...data,
         stock: Number(data.stock),
@@ -106,7 +111,11 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
               handleClose();
             })
             .catch((err) => {
-              toast.error(err?.message || "Error creating product variant");
+              const errorMessage = Array.isArray(err?.message)
+                ? err.message.join(", ")
+                : err?.message || "Error creating product variant";
+
+              toast.error(errorMessage);
             });
         }
       } catch (error) {

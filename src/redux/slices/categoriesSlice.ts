@@ -53,7 +53,7 @@ export const addCategory = createAsyncThunk(
       return newCategory;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.message || "Failed to create category"
+        error || "Failed to create category"
       );
     }
   }
@@ -67,7 +67,7 @@ export const updateCategory = createAsyncThunk(
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.message || "Failed to update category"
+        error || "Failed to update category"
       );
     }
   }

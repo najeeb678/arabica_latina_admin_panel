@@ -142,7 +142,7 @@ const DiscountsTable: React.FC<discountProps> = ({
       sx: {
         backgroundColor: "#FBC02D !important",
         borderRadius: "50px !important",
-        width: "150px !important",
+        width: "200px !important",
         fontSize: "14px",
         fontWeight: "bold !important",
         boxShadow: "none",

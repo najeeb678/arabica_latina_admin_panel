@@ -47,12 +47,12 @@ export default function Button({
       startIcon={leadingIcon}
       endIcon={trailingIcon && !loading ? trailingIcon : null}
       sx={{
-        ...sx, 
         "& .MuiButton-startIcon": {
-          marginLeft: leadingIcon ? -1 : 0, 
+          marginLeft: leadingIcon ? -1 : 0,
         },
-        paddingLeft: leadingIcon ? "6px" : "16px", 
-        paddingRight: trailingIcon ? "6px" : "16px", 
+        paddingLeft: leadingIcon ? "6px" : "16px",
+        paddingRight: trailingIcon ? "6px" : "16px",
+        ...sx,
       }}
     >
       {loading ? (

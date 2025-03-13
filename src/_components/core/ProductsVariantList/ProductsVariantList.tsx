@@ -166,6 +166,7 @@ const ProductVariantsList = () => {
         "&:hover": {
           color: "white !important",
         },
+        "aria-label": "Create Product Variant",
       },
     },
   ];

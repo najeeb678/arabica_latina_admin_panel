@@ -158,7 +158,7 @@ const Categories = () => {
       label: "Add Category",
       variant: "contained",
       onClick: handleNewCategory,
-      size: "sm",
+      size: "md",
       textColored: true,
       sx: {
         backgroundColor: "#FBC02D !important",

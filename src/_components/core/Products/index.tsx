@@ -21,7 +21,7 @@ const AdminProductsTable = () => {
   const { productsData, loadingproductsData } = useSelector(
     (state: any) => state.products
   );
-
+  const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredName, setFilteredName] = useState<string>("");
   const [productsFilter, setProductsFilter] = useState<string>("weekly");
@@ -30,6 +30,7 @@ const AdminProductsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoading(true);
     dispatch(
       getAllProducts({
         search: filteredName,
@@ -41,6 +42,9 @@ const AdminProductsTable = () => {
       .then((res) => {})
       .catch((err) => {
         console.error("Error Fetching Products Data:", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [filteredName, productsFilter, dispatch]);
 
@@ -146,7 +150,7 @@ const AdminProductsTable = () => {
         setSelectedProduct(null);
         setOpenProductModal(true);
       },
-      size: "sm",
+      size: "md",
       sx: {
         backgroundColor: "#FBC02D !important",
         borderRadius: "50px !important",
@@ -186,7 +190,7 @@ const AdminProductsTable = () => {
         data={transformedProductsData}
         columns={columns}
         title="Products"
-        loading={loadingproductsData}
+        loading={loading}
         buttons={buttons}
       />
 

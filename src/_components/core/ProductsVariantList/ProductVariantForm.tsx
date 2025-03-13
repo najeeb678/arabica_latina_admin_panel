@@ -178,7 +178,7 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                     }
                     data={productsData.map((product: any) => ({
                       ...product,
-                      name: `${product.name} - ${product?.category.gender}`,
+                      name: `${product?.name} - ${product?.category?.gender}`,
                     }))}
                     onChange={(value) =>
                       formik.setFieldValue(

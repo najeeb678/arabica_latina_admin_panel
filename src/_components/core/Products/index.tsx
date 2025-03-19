@@ -157,9 +157,12 @@ const AdminProductsTable = () => {
         boxShadow: "none",
         whiteSpace: "nowrap !important",
         transform: "none !important",
-
+        width: "auto !important",
+        minWidth: "150px",
+        maxWidth: "100%",
         "&:hover": {
           color: "white !important",
+          backgroundColor: "#FBC02D !important",
         },
       },
     },

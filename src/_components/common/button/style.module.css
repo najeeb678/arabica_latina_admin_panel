@@ -20,30 +20,30 @@
 
 /* Variant and alternative styles */
 .contained {
-  background-color: #2f5bf6;
+  background-color: #FBC02D;
   color: #fff;
 }
 .contained:hover {
   background-color: #f7f7f7;
-  color: #2f5bf6;
+  color: #FBC02D;
 }
 .containedAlt {
   background-color: #fff;
-  color: #2b59ff;
+  color: #FBC02D;
 }
 .containedAlt:hover {
   background-color: #f0f4ff;
-  color: #2b59ff;
+  color: #FBC02D;
 }
 
 .outlined {
   background-color: transparent;
-  border: 1px solid #2b59ff;
-  color: #2b59ff;
+  border: 1px solid #FBC02D;
+  color: #FBC02D;
 }
 .outlined:hover {
   background-color: rgba(43, 89, 255, 0.1);
-  color: #2b59ff;
+  color: #FBC02D;
 }
 
 .text {
@@ -56,11 +56,11 @@
 }
 .textColored {
   background-color: #ffffff;
-  color: #2b59ff;
+  color: #FBC02D;
 }
 .textColored:hover {
   background-color: #f8f0f0;
-  color: #2b59ff;
+  color: #FBC02D;
 }
 .outlinedAlt {
   background-color: transparent;

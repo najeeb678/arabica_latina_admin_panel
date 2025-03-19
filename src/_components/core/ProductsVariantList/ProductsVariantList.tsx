@@ -157,7 +157,7 @@ const ProductVariantsList = () => {
       size: "md",
       textColored: true,
       sx: {
-        width: "150px !important",
+        width: "180px !important",
         minWidth: "150px",
         maxWidth: "100%",
         backgroundColor: "#FBC02D !important",

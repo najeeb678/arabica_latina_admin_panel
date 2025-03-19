@@ -161,6 +161,9 @@ const Categories = () => {
       size: "md",
       textColored: true,
       sx: {
+        width: "120px !important",
+        minWidth: "150px !important",
+        maxWidth: "100% !important",
         backgroundColor: "#FBC02D !important",
         borderRadius: "50px !important",
         boxShadow: "none",

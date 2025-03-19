@@ -158,13 +158,16 @@ const ProductVariantsList = () => {
       textColored: true,
       sx: {
         width: "150px !important",
+        minWidth: "150px",
+        maxWidth: "100%",
         backgroundColor: "#FBC02D !important",
         borderRadius: "50px !important",
         boxShadow: "none",
         whiteSpace: "nowrap !important",
-        transform: "none",
+        transform: "none !important",
         "&:hover": {
           color: "white !important",
+          backgroundColor: "#F9A825 !important",
         },
         "aria-label": "Create Product Variant",
       },

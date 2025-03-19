@@ -20,13 +20,19 @@
 
 /* Variant and alternative styles */
 .contained {
-  background-color: #FBC02D;
+  background-color: #FBC02D !important;
   color: #fff;
+  width: fit-content; 
+  min-width: 150px;
+  max-width: 100%;
+  border-radius: 50px;
 }
+
 .contained:hover {
-  background-color: #f7f7f7;
-  color: #FBC02D;
+  background-color: #f7f7f7 !important;
+  color: #FBC02D !important;
 }
+
 .containedAlt {
   background-color: #fff;
   color: #FBC02D;

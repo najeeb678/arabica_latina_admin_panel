@@ -16,7 +16,11 @@ import {
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
 
 import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
+import dynamic from "next/dynamic";
 
+const RichTextEditor = dynamic(() => import("@mantine/rte"), {
+  ssr: false,
+});
 interface AddProductProps {
   handleClose?: () => void;
   productDetails?: any;
@@ -62,6 +66,7 @@ const AddProduct: React.FC<AddProductProps> = ({
       productType: Yup.string().required("Product type is required"),
     }),
     onSubmit: async (data) => {
+      // console.log("dddd", data);
       setLoading(true);
       const formData = {
         ...data,
@@ -131,28 +136,6 @@ const AddProduct: React.FC<AddProductProps> = ({
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} component="div">
-              <GenericInput
-                label="Description"
-                name="description"
-                type="text"
-                value={formik.values.description}
-                onChange={formik.handleChange("description")}
-                onBlur={formik.handleBlur("description")}
-                error={
-                  formik.touched.description &&
-                  Boolean(formik.errors.description)
-                }
-                helperText={
-                  formik.touched.description && formik.errors.description
-                    ? (formik.errors.description as any)
-                    : undefined
-                }
-                placeholder="Enter product description"
-                sx={{ marginTop: "10px" }}
-                inputfieldHeight="45px"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }} component="div">
               <SingleSelect
                 title="Select a Category"
                 textFieldLabel="Select Category"
@@ -193,6 +176,60 @@ const AddProduct: React.FC<AddProductProps> = ({
                 </Typography>
               )}
             </Grid>
+            <Grid size={{ xs: 12 }} component="div">
+              <Typography
+                sx={{
+                  color: "#2E2B2A",
+                  fontSize: "14px",
+                  fontFamily: "Helvetica",
+                  marginBottom: "7px",
+                  marginTop: "4px",
+                }}
+              >
+                Enter Description
+              </Typography>
+              <RichTextEditor
+                id="rte"
+                controls={[
+                  ["bold", "italic", "underline", "link", "image"],
+                  ["unorderedList", "h1", "h2", "h3"],
+                  ["sup", "sub"],
+                  ["alignLeft", "alignCenter", "alignRight"],
+                ]}
+                onBlur={() => formik.setFieldTouched("description", true)}
+                onChange={(value) => formik.setFieldValue("description", value)}
+                value={formik.values.description}
+              />
+              {formik.touched.description && formik.errors.description && (
+                <div
+                  style={{ color: "red", fontSize: "12px", marginTop: "4px" }}
+                >
+                  {formik.errors.description as string}
+                </div>
+              )}
+            </Grid>
+            {/* <Grid size={{ xs: 12, md: 6 }} component="div">
+              <GenericInput
+                label="Description"
+                name="description"
+                type="text"
+                value={formik.values.description}
+                onChange={formik.handleChange("description")}
+                onBlur={formik.handleBlur("description")}
+                error={
+                  formik.touched.description &&
+                  Boolean(formik.errors.description)
+                }
+                helperText={
+                  formik.touched.description && formik.errors.description
+                    ? (formik.errors.description as any)
+                    : undefined
+                }
+                placeholder="Enter product description"
+                sx={{ marginTop: "10px" }}
+                inputfieldHeight="45px"
+              />
+            </Grid> */}
 
             <Grid size={{ xs: 12, md: 6 }} component="div">
               <GenericInput

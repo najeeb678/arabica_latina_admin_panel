@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from "react";
 import { Box, Button, Avatar, IconButton, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -41,7 +38,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
         const formData = new FormData();
         formData.append("image", file);
         const imageUrl = await dispatch(uploadImage(formData)).unwrap();
-        
+
         onImageChange(imageUrl);
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -59,6 +56,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
       sx={{
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
         width: "100%",
         height: "100%",
@@ -68,8 +66,8 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
         {/* Product Image */}
         <Button
           sx={{
-            height: height || 180, 
-            width: width || 160, 
+            height: height || 180,
+            width: width || 160,
             textAlign: "center",
             borderRadius: "8px",
             position: "relative",
@@ -89,8 +87,8 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
               src={selectedImage}
               variant="rounded"
               sx={{
-                height: height || 180, 
-                width: width || 160, 
+                height: height || 180,
+                width: width || 160,
                 opacity: uploading ? 0.5 : 1,
               }}
             />
@@ -176,6 +174,9 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
           />
         </IconButton>
       </Box>
+      <Typography variant="caption" color="textSecondary" mt={1}>
+        Accepted formats: PNG, JPG, JPEG
+      </Typography>
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import { CiStar, CiSettings } from "react-icons/ci";
 import dynamic from "next/dynamic";
-
+import { FaRegImages } from "react-icons/fa";
 import { RiHomeSmileLine } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
 
@@ -76,8 +76,8 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
     },
     {
       title: "Hero Images",
-      icon: CiSettings,
-      path: "/heroimages",
+      icon: FaRegImages,
+      path: "/hero-images",
     },
   ];
 };

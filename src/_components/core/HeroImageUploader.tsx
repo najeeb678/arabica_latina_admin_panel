@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,8 +14,8 @@ import {
   Cancel,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { uploadImage } from "../../redux/slices/categoriesSlice"; 
-import { addHeroImages, getHeroImages } from "../../redux/slices/productsSlice"; 
+import { uploadImage } from "../../redux/slices/categoriesSlice";
+import { addHeroImages, getHeroImages } from "../../redux/slices/productsSlice";
 import { toast } from "react-toastify";
 
 const HeroImageUploader: React.FC = () => {
@@ -23,7 +23,7 @@ const HeroImageUploader: React.FC = () => {
 
   const [images, setImages] = useState<{ [key: string]: string }>({
     pic1: "",
-    pic2: "",
+    pic2: "https://res.cloudinary.com/drascgtap/image/upload/v1742553015/BookingEngine/vsryhl20xf6cf9jravsj.png",
     pic3: "",
   });
 
@@ -32,6 +32,22 @@ const HeroImageUploader: React.FC = () => {
     pic2: false,
     pic3: false,
   });
+
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const heroImages = await dispatch(getHeroImages()).unwrap();
+        setImages({
+          pic1: heroImages.pic1 || "",
+          pic2: heroImages.pic2 || "",
+          pic3: heroImages.pic3 || "",
+        });
+      } catch (error) {
+        console.error("Error fetching hero images:", error);
+      }
+    };
+    fetchHeroImages();
+  }, [dispatch]);
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -44,7 +60,6 @@ const HeroImageUploader: React.FC = () => {
         const formData = new FormData();
         formData.append("image", file);
         const imageUrl = await dispatch(uploadImage(formData)).unwrap();
-
         setImages((prev) => ({ ...prev, [key]: imageUrl }));
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -56,7 +71,21 @@ const HeroImageUploader: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      //   await dispatch(saveImages(images)).unwrap();
+      await dispatch(
+        addHeroImages({
+          pic1: images.pic1,
+          pic2: images.pic2,
+          pic3: images.pic3,
+        })
+      ).unwrap();
+      //   const heroImages = await dispatch(getHeroImages()).unwrap();
+      //   await dispatch(
+      //     addHeroImages({
+      //       pic1: images.pic1 || heroImages.pic1,
+      //       pic2: images.pic2 || heroImages.pic2,
+      //       pic3: images.pic3 || heroImages.pic3,
+      //     })
+      //   ).unwrap();
       toast.success("Images saved successfully!");
     } catch (error) {
       console.error("Error saving images:", error);
@@ -66,7 +95,6 @@ const HeroImageUploader: React.FC = () => {
 
   return (
     <Box textAlign="center">
-      {/* Image Upload Section */}
       <Box display="flex" justifyContent="center" gap={3} flexWrap="wrap">
         {Object.keys(images).map((key, index) => (
           <Box key={key} sx={{ position: "relative", textAlign: "center" }}>
@@ -106,10 +134,7 @@ const HeroImageUploader: React.FC = () => {
                 >
                   <PhotoCamera fontSize="large" />
                   <Typography variant="caption">
-                    Upload Image{" "}
-                    <span style={{ fontWeight: "bold", fontSize: "14px" }}>
-                      {index + 1}
-                    </span>
+                    Upload Image {index + 1}
                   </Typography>
                 </Box>
               )}
@@ -121,7 +146,6 @@ const HeroImageUploader: React.FC = () => {
               />
             </Button>
 
-            {/* Edit Icon */}
             {images[key] && !uploading[key] && (
               <IconButton
                 sx={{
@@ -146,8 +170,6 @@ const HeroImageUploader: React.FC = () => {
           </Box>
         ))}
       </Box>
-
-      {/* Buttons */}
       <Box mt={3} display="flex" justifyContent="center" gap={2}>
         <Button
           type="submit"
@@ -172,7 +194,7 @@ const HeroImageUploader: React.FC = () => {
         >
           Save
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           sx={{
             fontSize: "13px !important",
@@ -190,7 +212,7 @@ const HeroImageUploader: React.FC = () => {
           startIcon={<Cancel />}
         >
           Cancel
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

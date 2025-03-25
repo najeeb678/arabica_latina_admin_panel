@@ -4,6 +4,8 @@ import {
   getAllProductsApi,
   updateProductApi,
   deleteProductApi,
+  addHeroImagesApi,
+  getHeroImagesApi,
 } from "../api/productsApi";
 
 export const getAllProducts = createAsyncThunk<
@@ -23,6 +25,28 @@ export const addProduct = createAsyncThunk(
   async (payload: any, { rejectWithValue }) => {
     try {
       const response = await addProductApi(payload);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Error adding product");
+    }
+  }
+);
+export const addHeroImages = createAsyncThunk(
+  "products/addHeroImages",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await addHeroImagesApi(payload);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Error adding product");
+    }
+  }
+);
+export const getHeroImages = createAsyncThunk(
+  "products/getHeroImages",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getHeroImagesApi();
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Error adding product");

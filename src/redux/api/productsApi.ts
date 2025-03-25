@@ -24,6 +24,14 @@ export const updateProductApi = async (id: string, data: any): Promise<any> => {
   const response = await api.patch<any>(`/products/${id}`, data, {});
   return response.data;
 };
+export const addHeroImagesApi = async (data: any): Promise<any> => {
+  const response = await api.post<any>(`/images/`, data, {});
+  return response.data;
+};
+export const getHeroImagesApi = async (): Promise<any> => {
+  const response = await api.get<any>(`/images/`);
+  return response.data;
+};
 
 export const deleteProductApi = async (id: string): Promise<any> => {
   const token = localStorage.getItem("token");

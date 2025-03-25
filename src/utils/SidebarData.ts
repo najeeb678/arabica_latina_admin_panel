@@ -74,5 +74,10 @@ export const getSidebarData = (role: string | null): SidebarItem[] => {
       icon: CiSettings,
       path: "/inquiries",
     },
+    {
+      title: "Hero Images",
+      icon: CiSettings,
+      path: "/heroimages",
+    },
   ];
 };

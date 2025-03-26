@@ -151,7 +151,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
           )}
           <input
             type="file"
-            accept="image/png, image/jpg, image/jpeg"
+           accept="image/png, image/jpg, image/jpeg, image/webp"
             hidden
             onChange={handleImageChange}
           />
@@ -184,7 +184,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
         </IconButton>
       </Box>
       <Typography variant="caption" color="textSecondary" mt={1}>
-        Accepted formats: PNG, JPG, JPEG
+        Accepted formats: PNG, JPG, JPEG,webp
       </Typography>
     </Box>
   );

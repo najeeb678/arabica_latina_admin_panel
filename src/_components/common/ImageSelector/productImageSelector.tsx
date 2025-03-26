@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { ThreeDots } from "react-loader-spinner";
 import { uploadImage } from "../../../redux/slices/categoriesSlice";
+import { toast } from "react-toastify";
 
 interface ProductImageUploaderProps {
   selectedImage: string;
@@ -14,7 +15,7 @@ interface ProductImageUploaderProps {
   onImageChange: (imageUrl: string) => void;
   setIsImageUploading?: (isUploading: boolean) => void;
 }
-
+const MAX_FILE_SIZE = 1 * 1024 * 1024;
 const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
   selectedImage,
   height,
@@ -28,12 +29,19 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    const fileInput = event.target;
     const file = event.target.files?.[0];
     if (file) {
-      setUploading(true);
-      if (setIsImageUploading) {
-        setIsImageUploading(true);
+      // Check file size before uploading
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error("Image is too large. Please upload an image under 1024KB.");
+        fileInput.value = "";
+        return;
       }
+
+      setUploading(true);
+      if (setIsImageUploading) setIsImageUploading(true);
+
       try {
         const formData = new FormData();
         formData.append("image", file);
@@ -42,6 +50,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
         onImageChange(imageUrl);
       } catch (error) {
         console.error("Error uploading image:", error);
+        fileInput.value = "";
       } finally {
         if (setIsImageUploading) {
           setIsImageUploading(false);

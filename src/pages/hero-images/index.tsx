@@ -4,7 +4,7 @@ import HeroImageUploader from "@/_components/core/HeroImageUploader";
 
 const index = () => {
   return (
-    <Container>
+    <Box sx={{ backgroundColor: "#fff", borderRadius: "10px" }}>
       <Box
         sx={{
           backgroundColor: "white",
@@ -15,12 +15,10 @@ const index = () => {
           mb: 5,
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "#2d2d2d" }}>
-          Hero Section Images Upload
-        </Typography>
+        <Typography>Hero Section Images Upload</Typography>
       </Box>
       <HeroImageUploader />
-    </Container>
+    </Box>
   );
 };
 

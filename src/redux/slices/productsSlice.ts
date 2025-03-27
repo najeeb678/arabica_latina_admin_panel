@@ -31,6 +31,17 @@ export const addProduct = createAsyncThunk(
     }
   }
 );
+// export const addHeroImages = createAsyncThunk(
+//   "products/addHeroImages",
+//   async (payload: any, { rejectWithValue }) => {
+//     try {
+//       const response = await addHeroImagesApi(payload);
+//       return response;
+//     } catch (error: any) {
+//       return rejectWithValue(error.response?.data || "Error adding product");
+//     }
+//   }
+// );
 export const addHeroImages = createAsyncThunk(
   "products/addHeroImages",
   async (payload: any, { rejectWithValue }) => {
@@ -38,16 +49,19 @@ export const addHeroImages = createAsyncThunk(
       const response = await addHeroImagesApi(payload);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Error adding product");
+      return rejectWithValue(
+        error.response?.data || "Error updating hero images"
+      );
     }
   }
 );
+
 export const getHeroImages = createAsyncThunk(
   "products/getHeroImages",
   async (_, { rejectWithValue }) => {
     try {
       const response = await getHeroImagesApi();
-      return response;
+      return response?.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Error adding product");
     }

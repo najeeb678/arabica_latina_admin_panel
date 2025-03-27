@@ -7,12 +7,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import {
-  PhotoCamera,
-  Edit as EditIcon,
-  Save,
-  Cancel,
-} from "@mui/icons-material";
+import { PhotoCamera, Edit as EditIcon, Save } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { uploadImage } from "../../redux/slices/categoriesSlice";
 import { addHeroImages, getHeroImages } from "../../redux/slices/productsSlice";
@@ -20,28 +15,31 @@ import { toast } from "react-toastify";
 
 const HeroImageUploader: React.FC = () => {
   const dispatch: any = useDispatch();
-
+  const [heroId, setHeroId] = useState("");
   const [images, setImages] = useState<{ [key: string]: string }>({
-    pic1: "",
-    pic2: "https://res.cloudinary.com/drascgtap/image/upload/v1742553015/BookingEngine/vsryhl20xf6cf9jravsj.png",
-    pic3: "",
+    pictureOne: "",
+    pictureTwo: "",
+    pictureThree: "",
   });
 
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({
-    pic1: false,
-    pic2: false,
-    pic3: false,
+    pictureOne: false,
+    pictureTwo: false,
+    pictureThree: false,
   });
-
+  console.log("images", images);
   useEffect(() => {
     const fetchHeroImages = async () => {
       try {
         const heroImages = await dispatch(getHeroImages()).unwrap();
-        setImages({
-          pic1: heroImages.pic1 || "",
-          pic2: heroImages.pic2 || "",
-          pic3: heroImages.pic3 || "",
-        });
+        if (heroImages) {
+          setHeroId(heroImages.id);
+          setImages({
+            pictureOne: heroImages.pictureOne || "",
+            pictureTwo: heroImages.pictureTwo || "",
+            pictureThree: heroImages.pictureThree || "",
+          });
+        }
       } catch (error) {
         console.error("Error fetching hero images:", error);
       }
@@ -73,20 +71,14 @@ const HeroImageUploader: React.FC = () => {
     try {
       await dispatch(
         addHeroImages({
-          pic1: images.pic1,
-          pic2: images.pic2,
-          pic3: images.pic3,
+          id: heroId,
+          pictureOne: images.pictureOne,
+          pictureTwo: images.pictureTwo,
+          pictureThree: images.pictureThree,
         })
       ).unwrap();
-      //   const heroImages = await dispatch(getHeroImages()).unwrap();
-      //   await dispatch(
-      //     addHeroImages({
-      //       pic1: images.pic1 || heroImages.pic1,
-      //       pic2: images.pic2 || heroImages.pic2,
-      //       pic3: images.pic3 || heroImages.pic3,
-      //     })
-      //   ).unwrap();
-      toast.success("Images saved successfully!");
+
+      toast.success("Images updated successfully!");
     } catch (error) {
       console.error("Error saving images:", error);
       toast.error("Failed to save images.");
@@ -140,7 +132,7 @@ const HeroImageUploader: React.FC = () => {
               )}
               <input
                 type="file"
-                accept="image/png, image/jpg, image/jpeg"
+                accept="image/png, image/jpg, image/jpeg, image/webp, image/svg+xml"
                 hidden
                 onChange={(e) => handleImageChange(e, key)}
               />
@@ -161,7 +153,7 @@ const HeroImageUploader: React.FC = () => {
                 <EditIcon fontSize="small" />
                 <input
                   type="file"
-                  accept="image/png, image/jpg, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg, image/webp, image/svg+xml"
                   hidden
                   onChange={(e) => handleImageChange(e, key)}
                 />
@@ -194,25 +186,6 @@ const HeroImageUploader: React.FC = () => {
         >
           Save
         </Button>
-        {/* <Button
-          variant="outlined"
-          sx={{
-            fontSize: "13px !important",
-            fontWeight: "400 !important",
-            borderRadius: "50px !important",
-            borderColor: "#FBC02D !important",
-            color: "#FBC02D !important",
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
-              borderColor: "#FBC02D !important",
-              backgroundColor: "#FBC02D !important",
-              color: "white !important",
-            },
-          }}
-          startIcon={<Cancel />}
-        >
-          Cancel
-        </Button> */}
       </Box>
     </Box>
   );

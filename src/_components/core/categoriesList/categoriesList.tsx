@@ -17,7 +17,7 @@ import TransitionsDialog from "@/_components/common/CustomModal/TransitionsDialo
 import CustomModal from "@/_components/common/CustomModal/CustomModal";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import { toast } from "react-toastify";
-
+//updates
 const Categories = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, loading } = useSelector(
@@ -169,9 +169,10 @@ const Categories = () => {
         boxShadow: "none",
         whiteSpace: "nowrap !important",
         transform: "none !important",
-
+        fontWeight: "bold !important",
         "&:hover": {
-          color: "white !important",
+          color: "#fff !important",
+          backgroundColor: "#F9A825 !important",
         },
       },
     },

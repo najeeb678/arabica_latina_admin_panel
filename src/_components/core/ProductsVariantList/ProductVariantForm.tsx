@@ -20,6 +20,7 @@ import SingleSelect from "@/_components/common/AdvancedUiElements/SingleSelect";
 import categories from "@/pages/categories";
 import { toast } from "react-toastify";
 import { updateProductVariantAPI } from "@/redux/api/ProductVariantsApi";
+import { cssNamedColors } from "@/utils/constants";
 
 // Define prop types
 interface ProductVariantFormProps {
@@ -55,7 +56,21 @@ const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
     },
     validationSchema: Yup.object().shape({
       productId: Yup.string().required("Product is required"),
-      color: Yup.string().required("Color is required"),
+
+      color: Yup.string()
+        .required("Color is required")
+        .test(
+          "is-valid-color",
+          "Enter a hex code (e.g., #AABBCC) or a basic color like 'red', 'blue', etc.",
+          (value) => {
+            const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+            return (
+              cssNamedColors.includes(value?.toLowerCase()) ||
+              hexColorRegex.test(value)
+            );
+          }
+        ),
+
       style: Yup.string().required("Style is required"),
       size: Yup.string().required("Size is required"),
 

@@ -160,9 +160,9 @@ const AdminProductsTable = () => {
         width: "auto !important",
         minWidth: "150px",
         maxWidth: "100%",
+        fontWeight: "bold !important",
         "&:hover": {
-          color: "white !important",
-          backgroundColor: "#FBC02D !important",
+          backgroundColor: "#F9A825 !important",
         },
       },
     },

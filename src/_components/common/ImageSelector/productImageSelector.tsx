@@ -15,7 +15,7 @@ interface ProductImageUploaderProps {
   onImageChange: (imageUrl: string) => void;
   setIsImageUploading?: (isUploading: boolean) => void;
 }
-const MAX_FILE_SIZE = 1 * 1024 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
   selectedImage,
   height,
@@ -34,7 +34,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
     if (file) {
       // Check file size before uploading
       if (file.size > MAX_FILE_SIZE) {
-        toast.error("Image is too large. Please upload an image under 1024KB.");
+        toast.error("Image is too large. Please upload an image under 5 MB.");
         fileInput.value = "";
         return;
       }
@@ -177,7 +177,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
           <EditIcon fontSize="small" />
           <input
             type="file"
-            accept="image/png, image/jpg, image/jpeg"
+            accept="image/png, image/jpg, image/jpeg, image/webp, image/svg+xml"
             hidden
             onChange={handleImageChange}
           />

@@ -171,6 +171,7 @@ const Categories = () => {
         transform: "none !important",
         fontWeight: "bold !important",
         "&:hover": {
+          color: "#fff !important",
           backgroundColor: "#F9A825 !important",
         },
       },

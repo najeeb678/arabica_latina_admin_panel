@@ -169,9 +169,9 @@ const Categories = () => {
         boxShadow: "none",
         whiteSpace: "nowrap !important",
         transform: "none !important",
-
+        fontWeight: "bold !important",
         "&:hover": {
-          color: "white !important",
+          backgroundColor: "#F9A825 !important",
         },
       },
     },
